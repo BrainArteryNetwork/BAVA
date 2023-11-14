@@ -36,6 +36,8 @@ BAVA is a web-based platform and does not require any installation. Simply navig
 
 For detailed instructions on how to use BAVA and its features, please refer to the [User Guide](#).
 
+Tech Review: https://docs.google.com/presentation/d/14t-2LbsM4omQmxrEsxg8eQA_u8WlDCPD/edit?usp=sharing&ouid=101891819175501468829&rtpof=true&sd=true
+
 ## Contributing
 
 We welcome contributions from the research community. If you would like to contribute, please fork the repository and submit a pull request.
