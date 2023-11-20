@@ -356,12 +356,12 @@ def swc2graph(swcfilename, distance_threshold=10):
     return graph
 
 
-test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
+# test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
 
-graph = swc2graph(test_case)
+# graph = swc2graph(test_case)
 
-fig = create_interactive_plot(graph)
-# Show the plot
-fig.show()
+# fig = create_interactive_plot(graph)
+# # Show the plot
+# fig.show()
 
 # visualize_3d_graph(graph)
