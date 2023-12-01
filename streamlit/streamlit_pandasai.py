@@ -14,7 +14,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 llm = OpenAI(api_token="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")
 
-df = pd.read_excel('/Users/davidprendez/SoftwareDev/bava/demo_data.xlsx')
+df = pd.read_excel('/Users/davidprendez/SoftwareDev/sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
 smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False})
 #smart_df.chat('How many data points are there?')
