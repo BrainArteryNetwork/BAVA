@@ -12,7 +12,7 @@ from pandasai.llm import OpenAI
 import streamlit as st
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-llm = OpenAI(api_token="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")
+#llm = OpenAI(api_token="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")
 
 df = pd.read_excel('/Users/davidprendez/SoftwareDev/sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
@@ -23,7 +23,8 @@ smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False})
 
 def ai_viz():
     """
-    Produces the text input for the 
+    Produces the text input for the pandasai feature of the app. Users enter their
+    prompt directly and then pandasai uploads the corresponding visualization.
 
     """
     # Set the title of the web app
@@ -39,10 +40,16 @@ def ai_viz():
     st.pyplot(ai_output)
 
 def second_page():
+    """
+    Sample function for adding extra pages.
+    """
     st.title("Second Page")
     st.write("Add content here")
 
 def main():
+    """
+    Creates a sidebar for navigating through pages and organizes the pages.
+    """
     st.sidebar.title("Pages")
     selected_page = st.sidebar.radio("Select a category:", ("Home", "Second Page"))
 
