@@ -370,23 +370,23 @@ def swc2graph(swcfilename, distance_threshold=10):
     return graph
 
 
-test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
-test_case2 = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc"
+# test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
+# test_case2 = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc"
 
-graph = swc2graph(test_case)
-graph2 = swc2graph(test_case2)
+# graph = swc2graph(test_case)
+# graph2 = swc2graph(test_case2)
 
-length = calculate_total_length(graph)
-length2 = calculate_total_length(graph2)
-print(f'Total length: {length}, {length2}')
-branches = count_branch(graph)
-branches2 = count_branch(graph2)
-print(f'Total branches: {branches}, {branches2}')
+# length = calculate_total_length(graph)
+# length2 = calculate_total_length(graph2)
+# print(f'Total length: {length}, {length2}')
+# branches = count_branch(graph)
+# branches2 = count_branch(graph2)
+# print(f'Total branches: {branches}, {branches2}')
 
-pdb.set_trace()
+# pdb.set_trace()
 
 # graph_analysis(graph)
-add_centrality_measures(graph)
+# add_centrality_measures(graph)
 
 # fig = create_interactive_plot(graph)
 # # Show the plot
