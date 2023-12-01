@@ -5,6 +5,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
+from graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch
 
 BOITYPENUM = 23
 VESTYPENUM = 25
@@ -73,12 +74,26 @@ def create_interactive_plot(G):
     # Node data
     node_opacity = 0.5
     node_x, node_y, node_z, node_color, node_hover_text = [], [], [], [], []
+    centrality_eigen = 'eigenvector'
+    centrality_betweenness = 'betweenness'
+    centrality_closeness = 'closeness'
     for node, data in G.nodes(data=True):
         node_x.append(pos[node][0])
         node_y.append(pos[node][1])
         node_z.append(pos[node][2])
         node_color.append('red' if len(data['ves_type']) > 1 else 'blue')
-        node_hover_text.append(', '.join([getvesname(vt) for vt in data['ves_type']]))
+        hover_text = ', '.join([getvesname(vt) for vt in data['ves_type']])
+        
+        centrality_betweenness_value = data.get(centrality_betweenness, 0)  # Default to 0 if not found
+        hover_text += f"<br>{centrality_betweenness.capitalize()}: {centrality_betweenness_value*10000:.2f}"
+        
+        centrality_closeness_value = data.get(centrality_closeness, 0)  # Default to 0 if not found
+        hover_text += f"<br>{centrality_closeness.capitalize()}: {centrality_closeness_value*10000:.2f}"
+        
+        centrality_eigen_value = data.get(centrality_eigen, 0)  # Default to 0 if not found
+        hover_text += f"<br>{'Eigen Centrality'}: {centrality_eigen_value*10000:.2f}"
+        
+        node_hover_text.append(hover_text)
 
     node_trace = go.Scatter3d(x=node_x, y=node_y, z=node_z, mode='markers',
                               marker=dict(size=3.5, color=node_color), hoverinfo='text', 
@@ -274,7 +289,6 @@ def generateG(all_selected_points, all_selected_points_rad, all_selected_points_
 
     return G
 
-
 def swc2graph(swcfilename, distance_threshold=10):
     swclist = []
     if not os.path.exists(swcfilename):
@@ -356,9 +370,23 @@ def swc2graph(swcfilename, distance_threshold=10):
     return graph
 
 
-# test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
+test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
+test_case2 = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc"
 
-# graph = swc2graph(test_case)
+graph = swc2graph(test_case)
+graph2 = swc2graph(test_case2)
+
+length = calculate_total_length(graph)
+length2 = calculate_total_length(graph2)
+print(f'Total length: {length}, {length2}')
+branches = count_branch(graph)
+branches2 = count_branch(graph2)
+print(f'Total branches: {branches}, {branches2}')
+
+pdb.set_trace()
+
+# graph_analysis(graph)
+add_centrality_measures(graph)
 
 # fig = create_interactive_plot(graph)
 # # Show the plot

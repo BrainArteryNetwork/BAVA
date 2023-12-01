@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import networkx as nx
 import numpy as np
 from swc2graph import create_interactive_plot, swc2graph
+from graph_analysis import add_centrality_measures, graph_analysis
 
 # data_path = '/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data'
 data_path = '/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project/data/BRAVE'
@@ -25,7 +26,9 @@ for i, file_name in enumerate(file_list):
 	file_path = os.path.join(data_path, file_name)
 	
 	# Create the graph object and assign it to the case
-	graphs[case_name] = swc2graph(file_path)
+	G = swc2graph(file_path)
+	add_centrality_measures(G)
+	graphs[case_name] = G
 
 # Streamlit app
 st.title('Graph Visualization')
