@@ -5,41 +5,18 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch
-
-BOITYPENUM = 23
-VESTYPENUM = 25
-
-# Old iCafe definition
-def getvesname(id):
-    VesselName = [None for i in range(VESTYPENUM)]
-    VesselName[1] = "ICA_L"
-    VesselName[2] = "ICA_R"
-    VesselName[3] = "M1_L"
-    VesselName[4] = "M1_R"
-    VesselName[5] = "M2_L"
-    VesselName[6] = "M2_R"
-    VesselName[7] = "A1_L"
-    VesselName[8] = "A1_R"
-    VesselName[9] = "A2_L"
-    VesselName[10] = "A2_R"
-    VesselName[11] = "AComm"
-    VesselName[12] = "M3_L"
-    VesselName[13] = "M3_R"
-    VesselName[14] = "VA_L"
-    VesselName[15] = "VA_R"
-    VesselName[16] = "BA"
-    VesselName[17] = "P1_L"
-    VesselName[18] = "P1_R"
-    VesselName[19] = "P2_L"
-    VesselName[20] = "P2_R"
-    VesselName[21] = "PComm_L"
-    VesselName[22] = "PComm_R"
-    VesselName[23] = "OA_L"
-    VesselName[24] = "OA_R"
-    return VesselName[id]
+from graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch, calculate_features, matchvestype, getvesname, summarize_local_features
 
 def create_interactive_plot(G):
+    """
+    Creates an interactive 3D network graph plot.
+
+    Parameters:
+        G (networkx.Graph): The graph object representing the network.
+
+    Returns:
+        plotly.graph_objects.Figure: The interactive 3D network graph plot.
+    """
     # Extract node positions
     pos = nx.get_node_attributes(G, 'pos')
 
@@ -115,6 +92,15 @@ def create_interactive_plot(G):
     return fig
 
 def visualize_3d_graph(G):
+    """
+    Visualizes a 3D graph.
+
+    Parameters:
+        G (networkx.Graph): The graph to visualize.
+
+    Returns:
+        None
+    """
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -154,92 +140,21 @@ def visualize_3d_graph(G):
 
     plt.show()
 
-def matchvestype(starttype, endtype):
-    EndCondition = np.zeros((100, 100), dtype=np.int8)
-    EndCondition[1][3] = 1
-    EndCondition[2][4] = 2
-    EndCondition[3][1] = 1
-    EndCondition[3][5] = 7
-    EndCondition[3][7] = 3
-    EndCondition[4][2] = 2
-    EndCondition[4][8] = 4
-    EndCondition[4][6] = 8
-    EndCondition[5][6] = 11
-    EndCondition[5][3] = 7
-    EndCondition[5][23] = 9
-    EndCondition[5][99] = 9
-    EndCondition[6][4] = 8
-    EndCondition[6][5] = 11
-    EndCondition[6][24] = 10
-    EndCondition[6][99] = 10
-    EndCondition[7][3] = 3
-    EndCondition[7][13] = 5
-    EndCondition[7][29] = 5
-    EndCondition[7][99] = 5
-    EndCondition[8][4] = 4
-    EndCondition[8][14] = 6
-    EndCondition[8][30] = 6
-    EndCondition[8][99] = 6
-    EndCondition[9][11] = 23
-    EndCondition[10][12] = 24
-    EndCondition[11][9] = 23
-    EndCondition[12][10] = 24
-    EndCondition[13][7] = 5
-    EndCondition[13][99] = 12
-    EndCondition[13][25] = 12
-    EndCondition[13][29] = 5
-    EndCondition[14][8] = 6
-    EndCondition[14][99] = 13
-    EndCondition[14][26] = 13
-    EndCondition[14][30] = 6
-    EndCondition[15][17] = 14
-    EndCondition[16][17] = 15
-    EndCondition[17][15] = 14
-    EndCondition[17][16] = 15
-    EndCondition[17][18] = 16
-    EndCondition[18][17] = 16
-    EndCondition[18][20] = 18
-    EndCondition[18][19] = 17
-    EndCondition[19][18] = 17
-    EndCondition[19][21] = 21
-    EndCondition[19][99] = 19
-    EndCondition[19][27] = 19
-    EndCondition[20][22] = 22
-    EndCondition[20][18] = 18
-    EndCondition[20][99] = 20
-    EndCondition[20][28] = 20
-    EndCondition[21][19] = 21
-    EndCondition[22][20] = 22
-    EndCondition[23][99] = 9
-    EndCondition[23][5] = 9
-    EndCondition[23][23] = 9
-    EndCondition[24][99] = 10
-    EndCondition[24][6] = 10
-    EndCondition[24][24] = 10
-    EndCondition[25][99] = 12
-    EndCondition[25][13] = 12
-    EndCondition[25][25] = 12
-    EndCondition[26][99] = 13
-    EndCondition[26][14] = 13
-    EndCondition[26][26] = 13
-    EndCondition[27][99] = 19
-    EndCondition[27][19] = 19
-    EndCondition[27][27] = 19
-    EndCondition[28][99] = 20
-    EndCondition[28][20] = 20
-    EndCondition[28][28] = 20
-    EndCondition[29][7] = 5
-    EndCondition[29][13] = 5
-    EndCondition[29][29] = 5
-    EndCondition[29][99] = 5
-    EndCondition[30][8] = 6
-    EndCondition[30][14] = 6
-    EndCondition[30][30] = 6
-    EndCondition[30][99] = 6
-    return EndCondition[starttype][endtype]
-    # return getvesname(EndCondition[starttype][endtype])
 
 def generateG(all_selected_points, all_selected_points_rad, all_selected_points_id, all_selected_points_type):
+    """
+    Generate a graph representation of a 3D structure based on selected points.
+
+    Parameters:
+    - all_selected_points (list of lists): A list of lists containing the coordinates of selected points.
+    - all_selected_points_rad (list of lists): A list of lists containing the radii of the selected points.
+    - all_selected_points_id (list of lists): A list of lists containing the IDs of the selected points.
+    - all_selected_points_type (list of lists): A list of lists containing the types of the selected points.
+
+    Returns:
+    - G (networkx.Graph): A graph representation of the 3D structure, where nodes represent points and edges represent connections between points.
+    """
+
     G = nx.Graph()
 
     # Mapping from position to node ID
@@ -290,6 +205,17 @@ def generateG(all_selected_points, all_selected_points_rad, all_selected_points_
     return G
 
 def swc2graph(swcfilename, distance_threshold=10):
+    """
+    Convert an SWC file to a graph representation.
+
+    Parameters:
+    - swcfilename (str): The path to the SWC file.
+    - distance_threshold (float): The distance threshold for selecting points along the snakes.
+
+    Returns:
+    - graph (Graph): The graph representation of the SWC file.
+    """
+
     swclist = []
     if not os.path.exists(swcfilename):
         print("not exist", swcfilename)
@@ -364,12 +290,12 @@ def swc2graph(swcfilename, distance_threshold=10):
         # snake = Snake([PointROI(pos) for pos in selected_points])
         # snake.label = ves_type_swc
 
-    graph = generateG(all_selected_points[:100], all_selected_points_rad[:100], all_selected_points_id[:100], all_selected_points_type[:100])
-    # generateG(all_selected_points, all_selected_points_rad, all_selected_points_id, all_selected_points_type)
+    # graph = generateG(all_selected_points[:100], all_selected_points_rad[:100], all_selected_points_id[:100], all_selected_points_type[:100])
+    graph = generateG(all_selected_points, all_selected_points_rad, all_selected_points_id, all_selected_points_type)
 
     return graph
 
-
+# # for temporary test of visualization and feature output
 # test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
 # test_case2 = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc"
 
@@ -385,11 +311,14 @@ def swc2graph(swcfilename, distance_threshold=10):
 
 # pdb.set_trace()
 
-# graph_analysis(graph)
-# add_centrality_measures(graph)
+# feature_dict = calculate_features(graph)
+# summarize_dict = summarize_local_features(feature_dict)
+
+# # graph_analysis(graph)
+# # add_centrality_measures(graph)
 
 # fig = create_interactive_plot(graph)
 # # Show the plot
 # fig.show()
 
-# visualize_3d_graph(graph)
+# # visualize_3d_graph(graph)
