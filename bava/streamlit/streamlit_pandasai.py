@@ -5,6 +5,7 @@ This module uses pandasai and streamlit to produce a web-based app with data
 visualizations for a brain artery network dataset
 """
 import os
+
 import pandas as pd
 from pandasai import SmartDataframe
 from pandasai.llm import OpenAI
@@ -12,8 +13,8 @@ from pandasai.llm import OpenAI
 import streamlit as st
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-secret_values = os.environ['OPENAI_API_KEY']
-llm = OpenAI(api_token=secret_values)
+secret_values = os.environ['OPENAI_API_KEY'] # use 'export OPEN_AI_KEY={your API key}'
+llm = OpenAI(api_token=secret_values, save_charts=False)
 
 df = pd.read_excel('/Users/davidprendez/SoftwareDev/sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
@@ -36,9 +37,13 @@ def ai_viz():
     
     ai_output = smart_df.chat(user_input)
     
-    st.write(ai_output)
-    
-    st.pyplot(ai_output)
+   
+    try:
+        st.pyplot(ai_output)
+    except AttributeError:
+        pass
+        
+    st.write(str(ai_output))
 
 def second_page():
     """
