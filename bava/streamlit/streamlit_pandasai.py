@@ -5,6 +5,7 @@ This module uses pandasai and streamlit to produce a web-based app with data
 visualizations for a brain artery network dataset
 """
 import os
+
 import pandas as pd
 from pandasai import SmartDataframe
 from pandasai.llm import OpenAI

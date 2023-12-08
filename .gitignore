@@ -91,3 +91,6 @@ ENV/
 
 # Apple stuff
 .DS_Store
+
+# Data
+data/

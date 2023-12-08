@@ -5,7 +5,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch, calculate_features, matchvestype, getvesname, summarize_local_features
+from .graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch, calculate_features, matchvestype, getvesname, summarize_local_features
 
 def create_interactive_plot(G):
     """
