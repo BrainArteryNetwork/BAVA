@@ -117,7 +117,6 @@ dependencies:
       - ptyprocess==0.7.0
       - pure-eval==0.2.2
       - pyarrow==14.0.1
-#       - pydantic<2
       - pycparser==2.21
       - pydantic-core==2.14.5
       - pydeck==0.8.1b0
