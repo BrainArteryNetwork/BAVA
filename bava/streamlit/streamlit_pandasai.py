@@ -16,11 +16,12 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 secret_values = os.environ['OPENAI_API_KEY'] #use the command 'export OPENAI_API_KEY={your API key}' 
 llm = OpenAI(api_token=secret_values)
 
-df = pd.read_excel('/Users/davidprendez/SoftwareDev/sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
+df = pd.read_excel('./sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
 smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
 
-def ai_viz():
+def main():
+
     """
     Produces the text input for the pandasai feature of the app. Users enter their
     prompt directly and then pandasai uploads the corresponding visualization.
@@ -41,31 +42,7 @@ def ai_viz():
                 else:
                     st.write("Data visualization shared!")
 
-def home_page():
-    """
-    Sample function for adding extra pages.
-    """
-    st.title("Brain Artery Visualization and Analysis")
-    st.write("Software and App Development")
-
-    button1 = st.button("3D Visualization")
-    button2 = st.button("BAVA AI")
-
-def main():
-    """
-    Creates a sidebar for navigating through pages and organizes the pages.
-    """
-    st.sidebar.title("Pages")
-    selected_page = st.sidebar.radio("Select a page:", ("Home", "BAVA AI"))
-
-    if selected_page == "Home":
-        home_page()
-        
-    elif selected_page == "BAVA AI":
-        ai_viz()
-
 # Run the Streamlit app
 if __name__ == "__main__":
     main()
     
-
