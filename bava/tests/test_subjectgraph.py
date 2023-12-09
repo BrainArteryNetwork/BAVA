@@ -15,10 +15,15 @@ class TestSubjectGraph(unittest.TestCase):
         # Test that features were calculated
         self.assertIsNotNone(self.subject.features)
 
-    def test_summarize_local_features(self):
+    def test_morphological_features(self):
         # Test that local features can be summarized
-        summarized_features = self.subject.summarize_local_features()
-        self.assertIsNotNone(summarized_features)
+        morphological_features = self.subject.morphological_features
+        self.assertIsNotNone(morphological_features)
+        
+    def test_graph_features(self):
+        # Test that graph features can be retrieved
+        graph_features = self.subject.graph_features
+        self.assertIsNotNone(graph_features)
 
 if __name__ == '__main__':
     unittest.main()
