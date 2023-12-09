@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 
 # run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
 
-def main():
+def page_viz3d():
 	"""
 	Main function for graph visualization.
 
@@ -91,4 +91,4 @@ def main():
 	st.plotly_chart(fig)
 
 if __name__ == "__main__":
-	main()
+	page_viz3d()
