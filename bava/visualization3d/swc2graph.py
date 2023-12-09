@@ -5,7 +5,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from .graph_analysis import graph_analysis, add_centrality_measures, calculate_total_length, count_branch, calculate_features, matchvestype, getvesname, summarize_local_features
+from .graph_analysis import matchvestype, getvesname
 
 def create_interactive_plot(G):
     """
@@ -294,31 +294,3 @@ def swc2graph(swcfilename, distance_threshold=10):
     graph = generateG(all_selected_points, all_selected_points_rad, all_selected_points_id, all_selected_points_type)
 
     return graph
-
-# # for temporary test of visualization and feature output
-# test_case = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc"
-# test_case2 = "/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc"
-
-# graph = swc2graph(test_case)
-# graph2 = swc2graph(test_case2)
-
-# length = calculate_total_length(graph)
-# length2 = calculate_total_length(graph2)
-# print(f'Total length: {length}, {length2}')
-# branches = count_branch(graph)
-# branches2 = count_branch(graph2)
-# print(f'Total branches: {branches}, {branches2}')
-
-# pdb.set_trace()
-
-# feature_dict = calculate_features(graph)
-# summarize_dict = summarize_local_features(feature_dict)
-
-# # graph_analysis(graph)
-# # add_centrality_measures(graph)
-
-# fig = create_interactive_plot(graph)
-# # Show the plot
-# fig.show()
-
-# # visualize_3d_graph(graph)

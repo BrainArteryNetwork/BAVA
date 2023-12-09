@@ -191,7 +191,23 @@ def calculate_features(G):
 
     return artery_features
 
-def summarize_local_features(feature_dict):
+def morphological_features(feature_dict):
+    """
+    Calculate morphological features based on a given feature dictionary.
+
+    Parameters:
+    - feature_dict (dict): A dictionary containing snake types as keys and their corresponding features as values.
+
+    Returns:
+    - feature_dict (dict): The updated feature dictionary with additional morphological features.
+
+    The function calculates morphological features for different subregions, sides, and proximities of snakes.
+    It iterates through the subregions, sides, and proximities and checks if the snake type matches the specified criteria.
+    If a match is found, the snake features are added to the total features for that subregion, side, and proximity.
+    The function then merges the subregion results, further merges the merged results, and calculates the total length and total branch number.
+    Finally, the function converts the dictionary values from a list format [value1, value2] to a dictionary format {length: value1, branch_number: value2}.
+    The updated feature dictionary is returned.
+    """
 
     # Initialize the subregions
     subregions = ["ACA", "MCA", "PCA"]
@@ -243,6 +259,35 @@ def summarize_local_features(feature_dict):
                 ]
 
     def merge_subregion_results(subregion_results):
+        """
+        Merges the results of subregions into a single dictionary.
+
+        Args:
+            subregion_results (dict): A dictionary containing the results of subregions.
+                The keys represent the subregion identifiers, and the values represent the corresponding results.
+
+        Returns:
+            dict: A dictionary containing the merged results.
+                The keys are derived from the subregion identifiers by merging two components and fixing the third component.
+                The values are calculated by summing the first two values and calculating the average of the third value.
+
+        Example:
+            subregion_results = {
+                "subregion1": [1, 2, 3],
+                "subregion2": [4, 5, 6],
+                "subregion3": [7, 8, 9]
+            }
+            merged_results = merge_subregion_results(subregion_results)
+            print(merged_results)
+            # Output: {
+            #     "subregion1_2": [5, 7, 4.5],
+            #     "subregion1_3": [8, 10, 6],
+            #     "subregion2_1": [5, 7, 4.5],
+            #     "subregion2_3": [11, 13, 7.5],
+            #     "subregion3_1": [8, 10, 6],
+            #     "subregion3_2": [11, 13, 7.5]
+            # }
+        """
         merged_results = {}
 
         for subregion_key, subregion_value in subregion_results.items():
@@ -264,6 +309,25 @@ def summarize_local_features(feature_dict):
         return merged_results
 
     def further_merge(merged_results):
+        """
+        Merge the results of the given dictionary by further combining the values of specific keys.
+
+        Args:
+            merged_results (dict): A dictionary containing the merged results.
+
+        Returns:
+            dict: A dictionary with further merged results, where the values of specific keys are combined.
+
+        Example:
+            merged_results = {
+                "R1": [1, 2, 3],
+                "R2": [4, 5, 6],
+                "L1": [7, 8, 9],
+                "L2": [10, 11, 12]
+            }
+            further_merged_results = further_merge(merged_results)
+            # Output: {'R': [5, 7, 9], 'L': [17, 19, 21]}
+        """
         further_merged_results = {}
         keys_to_merge = ["R", "L", "MCA", "ACA", "PCA", "proximal", "distal"]
 
@@ -275,7 +339,7 @@ def summarize_local_features(feature_dict):
                     else:
                         # Add the values if the key already exists
                         further_merged_results[key] = [
-                                x + y if idx < 2 else (x + y) / 2
+                            x + y if idx < 2 else (x + y) / 2
                             for idx, (x, y) in enumerate(zip(further_merged_results[key], merged_value))
                         ]
         return further_merged_results
@@ -293,7 +357,15 @@ def summarize_local_features(feature_dict):
     total_results = {"total": [total_length, total_branches]}
     
     def dictvalue2dict(dictionary):
-        # Convert the previous dictionary value from list [value1, value2] to dictionary with format {length: value1, branch_number: value2}
+        """
+        Convert the previous dictionary value from list [value1, value2] to dictionary with format {length: value1, branch_number: value2}
+
+        Parameters:
+        dictionary (dict): The dictionary to be converted.
+
+        Returns:
+        dict: The converted dictionary with the format {length: value1, branch_number: value2}.
+        """
         converted_dict = {}
         for key, value in dictionary.items():
             converted_dict[key] = {
@@ -311,6 +383,58 @@ def summarize_local_features(feature_dict):
         **dictvalue2dict(total_results),
     }
     return feature_dict
+
+def graph_features(G):
+    """
+    Calculate the graph features of the graph.
+
+    Parameters:
+    - G (networkx.Graph): The input graph.
+
+    Returns:
+    - graph_features (dict): A dictionary containing the graph features.
+    """
+    # Calculate the average degree
+    average_degree = np.mean([degree for node, degree in G.degree()])
+
+    # Calculate the average clustering coefficient
+    average_clustering_coefficient = nx.average_clustering(G)
+
+    # Calculate the assortativity
+    assortativity = nx.degree_assortativity_coefficient(G)
+
+    # Calculate the average betweenness centrality
+    average_betweenness_centrality = np.mean(list(nx.betweenness_centrality(G).values()))
+
+    # Calculate the average closeness centrality
+    average_closeness_centrality = np.mean(list(nx.closeness_centrality(G).values()))
+
+    # Calculate the average eigenvector centrality
+    average_eigenvector_centrality = np.mean(list(nx.eigenvector_centrality(G, max_iter=5000).values()))
+
+    # Calculate the average pagerank
+    average_pagerank = np.mean(list(nx.pagerank(G).values()))
+
+    # Calculate the average degree centrality
+    average_degree_centrality = np.mean(list(nx.degree_centrality(G).values()))
+
+    # Calculate the average edge betweenness centrality
+    average_edge_betweenness_centrality = np.mean(list(nx.edge_betweenness_centrality(G).values()))
+
+    # Create a dictionary to store the graph features
+    graph_features = {
+        "average_degree": average_degree,
+        "average_clustering_coefficient": average_clustering_coefficient,
+        "assortativity": assortativity,
+        "average_betweenness_centrality": average_betweenness_centrality,
+        "average_closeness_centrality": average_closeness_centrality,
+        "average_eigenvector_centrality": average_eigenvector_centrality,
+        "average_pagerank": average_pagerank,
+        "average_degree_centrality": average_degree_centrality,
+        "average_edge_betweenness_centrality": average_edge_betweenness_centrality
+    }
+
+    return graph_features
 
 BOITYPENUM = 23
 VESTYPENUM = 25
