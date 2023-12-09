@@ -20,8 +20,7 @@ df = pd.read_excel('./sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
 smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
 
-def main():
-
+def page_pandasai():
     """
     Produces the text input for the pandasai feature of the app. Users enter their
     prompt directly and then pandasai uploads the corresponding visualization.
@@ -44,5 +43,5 @@ def main():
 
 # Run the Streamlit app
 if __name__ == "__main__":
-    main()
+    page_pandasai()
     
