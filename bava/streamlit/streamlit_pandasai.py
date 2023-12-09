@@ -13,59 +13,35 @@ from pandasai.llm import OpenAI
 import streamlit as st
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-secret_values = os.environ['OPENAI_API_KEY'] # use 'export OPEN_AI_KEY={your API key}'
-llm = OpenAI(api_token=secret_values, save_charts=False)
+secret_values = os.environ['OPENAI_API_KEY'] #use the command 'export OPENAI_API_KEY={your API key}' 
+llm = OpenAI(api_token=secret_values)
 
-df = pd.read_excel('/Users/davidprendez/SoftwareDev/sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
+df = pd.read_excel('./sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 
-smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False})
-#smart_df.chat('How many data points are there?')
+smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
 
-#smart_df.chat('Can you plot the SBP and DBP for Gender? Gender should be 0=Female and 1=Male.')
-
-def ai_viz():
+def page_pandasai():
     """
     Produces the text input for the pandasai feature of the app. Users enter their
     prompt directly and then pandasai uploads the corresponding visualization.
 
     """
-    # Set the title of the web app
-    st.title("Descriptive Data Visualization for the Brain Artery Network Dataset")
     
-    # Get user input using a text input box
-    user_input = st.text_input("What would you like to see? For example, type 'Plot the average SBP across different age groups'.")
-    
-    ai_output = smart_df.chat(user_input)
-    
+    st.title("Hi, I'm BAVA AI! How can I help you today?")
    
-    try:
-        st.pyplot(ai_output)
-    except AttributeError:
-        pass
-        
-    st.write(str(ai_output))
+    with st.form("Question"):
+        question = st.text_input("Message BAVA AI below. For example, type 'Plot the average SBP across different age groups'.", value="", type="default")
+        question_sent = st.form_submit_button("Send")
+        if question_sent:
+            with st.spinner():
+                ai_output = smart_df.chat(question)
 
-def second_page():
-    """
-    Sample function for adding extra pages.
-    """
-    st.title("Second Page")
-    st.write("Add content here")
-
-def main():
-    """
-    Creates a sidebar for navigating through pages and organizes the pages.
-    """
-    st.sidebar.title("Pages")
-    selected_page = st.sidebar.radio("Select a category:", ("Home", "Second Page"))
-
-    if selected_page == "Home":
-        ai_viz()
-    elif selected_page == "Second Page":
-        second_page()
+                if ai_output is not None:
+                    st.write(str(ai_output))
+                else:
+                    st.write("Data visualization shared!")
 
 # Run the Streamlit app
 if __name__ == "__main__":
-    main()
+    page_pandasai()
     
-
