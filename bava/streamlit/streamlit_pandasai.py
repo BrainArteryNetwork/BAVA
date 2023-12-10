@@ -39,6 +39,7 @@ def page_pandasai():
                 if ai_output is not None:
                     st.write(str(ai_output))
                 else:
+                    st.pyplot(ai_output)
                     st.write("Data visualization shared!")
 
 # Run the Streamlit app
