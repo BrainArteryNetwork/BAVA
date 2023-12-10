@@ -2,7 +2,7 @@
 """
 from sqlmodel import create_engine
 
-
+SQL_TABlE_NAME = "subjects"
 SQL_DB_FILENAME = "subjects.db"
 SQL_DB_URL = f"sqlite:///../../data/{SQL_DB_FILENAME}"
 
