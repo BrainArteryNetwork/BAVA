@@ -1,59 +1,58 @@
 
 """SQL Database models for each subject"""
 
-from typing import Optional, List
+from typing import List
 
-from sqlmodel import Field, SQLModel, or_, text
-from config import SQL_TABlE_NAME
-from schemas import Gender, Race
+from sqlmodel import or_, text, Session, select
+from .config import SQL_TABLE_NAME
+from .schemas import Gender, Race, Info, Subject, MetadataDB
 
+class BavaDB:
+    subjects: List[Subject] = []
+    metadata: MetadataDB = MetadataDB()
+    db_session: Session = None
 
-class Subject(SQLModel, table=True):
-    """
-    """
-    __tablename__ = "subjects"
+    def __init__(self, db_session: Session=None, subjects=[], metadata=None) -> None:
 
-    ID: str = Field(default="", primary_key=True)
-    Age: int
-    Smoking: bool
-    SBP: float
-    DBP: float
-    Hypertension: bool
-    TC: float
-    TG: float
-    HDL: float
-    LDL: float
-    Diabetes: bool
-    Framingham_Risk: float
-    Gender: Gender
-    Race: Race
-    unstructured_data: Optional[str]
+        if subjects and metadata:
+            self.subjects = subjects
+            self.metadata = MetadataDB(**metadata)
 
+        elif db_session:
+            self.db_session = db_session
+            self.subjects = self.db_session.exec(select(Subject)).all()
+            self.create_metadata_db()
+        
+        else:
+            raise NotImplementedError
+    
+    def create_metadata_db(self):
+        self.metadata.age = self.get_column_info ("Age")
+        self.metadata.sbp = self.get_column_info("SBP")
+        self.metadata.dbp = self.get_column_info("DBP")
+        self.metadata.tc = self.get_column_info("TC")
+        self.metadata.tg = self.get_column_info("TG")
+        self.metadata.hdl = self.get_column_info("HDL")
+        self.metadata.ldl = self.get_column_info("LDL")
+        self.metadata.framingham_risk = self.get_column_info("Framingham_Risk")
 
-class SubjectRecord(SQLModel):
-    """
-    """
-    ID: str
-    Age: int
-    Smoking: bool
-    SBP: float
-    DBP: float
-    Hypertension: bool
-    TC: float
-    TG: float
-    HDL: float
-    LDL: float
-    Diabetes: bool
-    Framingham_Risk: float
-    Gender: Gender
-    Race: Race
-
-class SubjectData(SQLModel):
-    """
-    """
-    ID: str
-    unstructured_data: Optional[str]
-
+    def get_column_info(self, column: str):
+        info = Info()
+        info.min = self.db_session.exec(text(f"SELECT MIN({column}) FROM {SQL_TABLE_NAME}")).all()[0][0]
+        info.max = self.db_session.exec(text(f"SELECT MAX({column}) FROM {SQL_TABLE_NAME}")).all()[0][0]
+        info.avg = self.db_session.exec(text(f"SELECT AVG({column}) FROM {SQL_TABLE_NAME}")).all()[0][0]
+        return info
+    
+    def to_dict(self):
+        return {
+            "subjects": self.subjects,
+            "metadata": self.metadata
+        }
+    
+    @classmethod
+    def from_dict(cls, db_dict: dict):
+        return cls(**db_dict)
+    
 
 def filter_age(statement, min: int, max: int):
     return statement.where(Subject.Age >= min, Subject.Age < max)
@@ -83,21 +82,22 @@ def filter_ldl(statement, min: float, max: float):
     return statement.where(Subject.LDL >= min, Subject.LDL < max)
 
 def filter_diabetes(statement, is_diabetes: bool):
-    return statement.where(Subject.Hypertension == is_diabetes)
+    return statement.where(Subject.Diabetes == is_diabetes)
 
 def filter_framingham_risk(statement, min: float, max: float):
-    return statement.where(Subject.Framingham_Risk >= min, Subject.Framingham_Risk < max)
+    return statement.where(Subject.Framingham_Risk >= min, 
+                           Subject.Framingham_Risk < max)
 
 def filter_gender(statement, genders: List[Gender]):
     gender_conditions = []
     for gender in genders:
-        gender_conditions.append(f"{SQL_TABlE_NAME}.Gender == \'{gender.name}\'")
+        gender_conditions.append(f"{SQL_TABLE_NAME}.Gender == \'{gender.name}\'")
     sql_or_statement = text("(" + " OR ".join(gender_conditions) + ")")
     return statement.where(or_(sql_or_statement))
 
 def filter_race(statement, races: List[Race]):
     race_conditions = []
     for race in races:
-        race_conditions.append(f"{SQL_TABlE_NAME}.Race == \'{race.name}\'")
+        race_conditions.append(f"{SQL_TABLE_NAME}.Race == \'{race.name}\'")
     sql_or_statement = text("(" + " OR ".join(race_conditions) + ")")
     return statement.where(or_(sql_or_statement))
