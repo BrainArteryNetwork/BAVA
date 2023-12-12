@@ -157,13 +157,37 @@ def page_pandasai():
 		# 	selected_subject.update(morphological_features)
 		# 	features.append(selected_subject)
    	
-    # # convert of list of dictionaries to a dataframe
+	# # convert of list of dictionaries to a dataframe
 	# df = pd.DataFrame(features)
 	# # replace the NaN values with 0
 	# df = df.fillna(0)
  
 	# load the dataframe from csv file
 	df = pd.read_excel('sample_data/subjects_reduced.xlsx')
+ 
+	# please add a streamlit sign to tell user what graphical and morphological features they can input into the textbox to chat with BAVA AI
+	st.write("The following are the graphical and morphological features you can use to chat with BAVA AI, along with demographic and clinical information.")
+	st.write("Morphological features:")
+	morphological_features_expander = st.expander("Click to view morphological features")
+	with morphological_features_expander:
+		st.write("- Length")
+		st.write("- Branch Number")
+		st.write("- Side: Left or Right")
+		st.write("- Territory: Anterior Cerebral Artery, Middle Cerebral Artery, Posterior Artery")
+		st.write("- Distal or Proximal")
+ 
+	st.write("Graphical features:")
+	graphical_features_expander = st.expander("Click to view graphical features")
+	with graphical_features_expander:
+		st.write("- Average degree")
+		st.write("- Average clustering coefficient")
+		st.write("- Assortativity")
+		st.write("- Average betweenness centrality")
+		st.write("- Average closeness centrality")
+		st.write("- Average pagerank")
+		st.write("- Average degree centrality")
+		st.write("- Average edge betweenness centrality")
+
 	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
    
 	with st.form("Question"):
@@ -178,11 +202,6 @@ def page_pandasai():
 				else:
 					st.pyplot(ai_output)
 					st.write("Data visualization shared!")
-
-	# Add a button at upper right corner to go back to the homepage
-	if st.button('Back to Homepage'):
-		st.balloons()
-		st.stop()
 
 # Run the Streamlit app
 if __name__ == "__main__":

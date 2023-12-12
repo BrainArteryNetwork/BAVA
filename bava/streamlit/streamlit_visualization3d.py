@@ -9,7 +9,6 @@ from bava.visualization3d.subject_graph import SubjectGraph
 from bava.api.database import BavaDB
 from bava.api.config import FAST_API_URL
 
-
 # run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
 
 def page_viz3d():
@@ -137,11 +136,6 @@ def page_viz3d():
 
 	# Show the figure in Streamlit
 	st.plotly_chart(fig)
-
-	# Add a button at upper right corner to go back to the homepage
-	if st.button('Back to Homepage'):
-		st.balloons()
-		st.stop()
 
 if __name__ == "__main__":
 	page_viz3d()
