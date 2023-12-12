@@ -41,7 +41,13 @@ class SubjectGraph:
         Returns:
             dict: A dictionary containing the summarized local features.
         """
-        return morphological_features(self.features)
+        morph_features = morphological_features(self.features)
+        # for each dictionary in morph_features, concat the key with the key in lower level dictionary and copy to a new dictionary
+        morph_features_new = {}
+        for key, value in morph_features.items():
+            for k, v in value.items():
+                morph_features_new[key + '_' + k] = v
+        return morph_features_new
 
     @property
     def graph_features(self):

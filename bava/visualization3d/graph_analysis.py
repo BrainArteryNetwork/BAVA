@@ -372,6 +372,7 @@ def morphological_features(feature_dict):
                 'length': value[0],
                 'branch_number': value[1]
             }
+            
         return converted_dict
 
     # concat results, merged_results, further_merged_results
@@ -410,7 +411,7 @@ def graph_features(G):
     average_closeness_centrality = np.mean(list(nx.closeness_centrality(G).values()))
 
     # Calculate the average eigenvector centrality
-    average_eigenvector_centrality = np.mean(list(nx.eigenvector_centrality(G, max_iter=5000).values()))
+    # average_eigenvector_centrality = np.mean(list(nx.eigenvector_centrality(G, max_iter=5000).values()))
 
     # Calculate the average pagerank
     average_pagerank = np.mean(list(nx.pagerank(G).values()))
@@ -428,7 +429,7 @@ def graph_features(G):
         "assortativity": assortativity,
         "average_betweenness_centrality": average_betweenness_centrality,
         "average_closeness_centrality": average_closeness_centrality,
-        "average_eigenvector_centrality": average_eigenvector_centrality,
+        # "average_eigenvector_centrality": average_eigenvector_centrality,
         "average_pagerank": average_pagerank,
         "average_degree_centrality": average_degree_centrality,
         "average_edge_betweenness_centrality": average_edge_betweenness_centrality

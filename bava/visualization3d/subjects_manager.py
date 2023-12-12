@@ -21,7 +21,7 @@ class SubjectsManager:
         """
         self.subjects = {}
 
-    def add_subject(self, identifier, swc_file):
+    def add_subject(self, identifier, swc_string):
         """
         Adds a new subject to the manager with the given identifier and SWC file.
 
@@ -29,7 +29,7 @@ class SubjectsManager:
             identifier (str): The identifier of the subject.
             swc_file (str): The file path of the SWC file associated with the subject.
         """
-        self.subjects[identifier] = SubjectGraph(swc_file)
+        self.subjects[identifier] = SubjectGraph(swc_string)
 
     def get_subject(self, identifier):
         """
