@@ -17,8 +17,14 @@ from typing import List, Dict
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session, SQLModel, select
 
-from .database import (filter_age, filter_race, 
-                      filter_gender, filter_diabetes, BavaDB)
+from .database import (filter_dataset,
+                       filter_age, filter_race, 
+                      filter_gender, filter_diabetes,
+                      filter_hypertension, 
+                      filter_dbp, filter_sbp,
+                        filter_tc, filter_tg, filter_framingham_risk,
+                        filter_hdl, filter_ldl,
+                      BavaDB)
 from .config import create_sql_engine
 from .schemas import FilterDB, Subject, SubjectRecord
 
@@ -92,9 +98,18 @@ async def get_filtered_data(*, session: Session = Depends(get_session), filter_o
         A list of SubjectRecord objects that match the specified filters.
     """
     statement = select(Subject)
+    statement = filter_dataset(statement, filter_options.datasets)
     statement = filter_age(statement, filter_options.age[0], filter_options.age[1])
     statement = filter_diabetes(statement, filter_options.diabetes)
     statement = filter_gender(statement, filter_options.genders)
     statement = filter_race(statement, filter_options.races)
+    statement = filter_hypertension(statement, filter_options.hypertension)
+    statement = filter_dbp(statement, filter_options.dbp[0], filter_options.dbp[1])
+    statement = filter_sbp(statement, filter_options.sbp[0], filter_options.sbp[1])
+    statement = filter_tc(statement, filter_options.tc[0], filter_options.tc[1])
+    statement = filter_tg(statement, filter_options.tg[0], filter_options.tg[1])
+    statement = filter_framingham_risk(statement, filter_options.framingham_risk[0], filter_options.framingham_risk[1])
+    statement = filter_hdl(statement, filter_options.hdl[0], filter_options.hdl[1])
+    statement = filter_ldl(statement, filter_options.ldl[0], filter_options.ldl[1])
     results = session.exec(statement).all()
     return results

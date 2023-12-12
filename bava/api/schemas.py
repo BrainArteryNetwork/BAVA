@@ -86,6 +86,7 @@ class FilterDB(BaseModel):
     """
     """
     ID: Optional[List[str]] = []
+    datasets: Optional[List[str]] = []
     age: Optional[Tuple] = tuple()
     smoking: Optional[bool]
     sbp: Optional[Tuple] = tuple()
