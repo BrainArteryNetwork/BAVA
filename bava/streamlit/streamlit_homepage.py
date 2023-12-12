@@ -7,7 +7,7 @@ def home_page():
     Sample function for adding extra pages.
     """
     st.title("Brain Artery Visualization and Analysis")
-    st.write("Software and App Development")
+    # st.write("Software and App Development")
 
     button1 = st.button("3D Visualization")
     button2 = st.button("BAVA AI")
