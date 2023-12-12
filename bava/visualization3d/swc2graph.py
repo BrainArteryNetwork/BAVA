@@ -1,11 +1,10 @@
-import os
-import pdb
 import copy
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from .graph_analysis import matchvestype, getvesname
+import ast
 
 def create_interactive_plot(G):
     """
@@ -84,7 +83,9 @@ def create_interactive_plot(G):
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, showbackground=False),
             zaxis=dict(showgrid=False, zeroline=False, showticklabels=False, showbackground=False),
         ),
-        legend=dict(title='Vessel Types')
+        legend=dict(title='Vessel Types'),
+        width=1000,
+        height=1000  # Adjust the height value as needed
     )
 
     # Create and return the figure
@@ -204,24 +205,20 @@ def generateG(all_selected_points, all_selected_points_rad, all_selected_points_
 
     return G
 
-def swc2graph(swcfilename, distance_threshold=10):
+def swc2graph(swc_string, distance_threshold=10):
     """
-    Convert an SWC file to a graph representation.
+    Convert an SWC string to a graph representation.
 
     Parameters:
-    - swcfilename (str): The path to the SWC file.
+    - swc_string (str): The SWC string containing the SWC data.
     - distance_threshold (float): The distance threshold for selecting points along the snakes.
 
     Returns:
-    - graph (Graph): The graph representation of the SWC file.
+    - graph (Graph): The graph representation of the SWC data.
     """
 
-    swclist = []
-    if not os.path.exists(swcfilename):
-        print("not exist", swcfilename)
-        return swclist
-
-    swc_data = np.loadtxt(swcfilename)
+    swc_list = ast.literal_eval(swc_string)
+    swc_data = np.array(swc_list)
     swc_data_transform = copy.deepcopy(swc_data)
 
     # Find the indices where the last column is -1
