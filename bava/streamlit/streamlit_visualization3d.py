@@ -138,5 +138,10 @@ def page_viz3d():
 	# Show the figure in Streamlit
 	st.plotly_chart(fig)
 
+	# Add a button at upper right corner to go back to the homepage
+	if st.button('Back to Homepage'):
+		st.balloons()
+		st.stop()
+
 if __name__ == "__main__":
 	page_viz3d()
