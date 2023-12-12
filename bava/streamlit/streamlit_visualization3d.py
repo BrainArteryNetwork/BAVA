@@ -6,8 +6,8 @@ import pandas as pd
 import streamlit as st
 
 from bava.visualization3d.subjects_manager import SubjectsManager
-from bava.fastapi.database import BavaDB
-from bava.fastapi.config import FAST_API_URL
+from bava.api.database import BavaDB
+from bava.api.config import FAST_API_URL
 
 
 # run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
@@ -60,7 +60,7 @@ def page_viz3d():
 	filter_options = {
 		"age": (min_age, max_age),
 		"diabetes": diabetes_option,
-		"races": selected_race_values
+		"races": selected_race_values if selected_race_values else race_values # Change in filter function
 	}
 
 	filtered_subjects = requests.post(url=f"{FAST_API_URL}/filter/", json=filter_options).json()
@@ -73,7 +73,7 @@ def page_viz3d():
 		selected_id = st.selectbox('Select a record:', subject_ids)
 		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
 		unstructured_data = selected_subject.pop("unstructured_data")
-		st.table(selected_subject)
+		st.dataframe(selected_subject)
 
 
 	data_path = './sample_data'
