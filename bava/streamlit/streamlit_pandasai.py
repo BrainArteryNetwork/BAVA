@@ -21,28 +21,33 @@ df = pd.read_excel('./sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
 smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
 
 def page_pandasai():
-    """
-    Produces the text input for the pandasai feature of the app. Users enter their
-    prompt directly and then pandasai uploads the corresponding visualization.
+	"""
+	Produces the text input for the pandasai feature of the app. Users enter their
+	prompt directly and then pandasai uploads the corresponding visualization.
 
-    """
-    
-    st.title("Hi, I'm BAVA AI! How can I help you today?")
+	"""
+	
+	st.title("Hi, I'm BAVA AI! How can I help you today?")
    
-    with st.form("Question"):
-        question = st.text_input("Message BAVA AI below. For example, type 'Plot the average SBP across different age groups'.", value="", type="default")
-        question_sent = st.form_submit_button("Send")
-        if question_sent:
-            with st.spinner():
-                ai_output = smart_df.chat(question)
+	with st.form("Question"):
+		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average SBP across different age groups'.", value="", type="default")
+		question_sent = st.form_submit_button("Send")
+		if question_sent:
+			with st.spinner():
+				ai_output = smart_df.chat(question)
 
-                if ai_output is not None:
-                    st.write(str(ai_output))
-                else:
-                    st.pyplot(ai_output)
-                    st.write("Data visualization shared!")
+				if ai_output is not None:
+					st.write(str(ai_output))
+				else:
+					st.pyplot(ai_output)
+					st.write("Data visualization shared!")
+
+	# Add a button at upper right corner to go back to the homepage
+	if st.button('Back to Homepage'):
+		st.balloons()
+		st.stop()
 
 # Run the Streamlit app
 if __name__ == "__main__":
-    page_pandasai()
-    
+	page_pandasai()
+	
