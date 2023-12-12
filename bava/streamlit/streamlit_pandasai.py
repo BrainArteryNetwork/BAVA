@@ -135,33 +135,35 @@ def page_pandasai():
 		st.markdown(f"{len(filtered_subjects)} records found!")
 		# create an empty list
 		features = []
-		for subject in filtered_subjects:
-			# print the index of the current subject among all the subjects, and the loading time
-			subject_id = subject['ID']
+		# for subject in filtered_subjects:
+		# 	# print the index of the current subject among all the subjects, and the loading time
+		# 	subject_id = subject['ID']
    
-			selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
-			unstructured_data = selected_subject.pop("unstructured_data")
+		# 	selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
+		# 	unstructured_data = selected_subject.pop("unstructured_data")
    
-			# check if unsturctured_data is None
-			if unstructured_data is None:
-				continue
+		# 	# check if unsturctured_data is None
+		# 	if unstructured_data is None:
+		# 		continue
 
-			# print(f"Loading subject {filtered_subjects.index(subject) + 1} of {len(filtered_subjects)}")
+		# 	# print(f"Loading subject {filtered_subjects.index(subject) + 1} of {len(filtered_subjects)}")
 
-			# retrieve the subject graph and get the morphological features and graph features
-			subject_graph = SubjectGraph(unstructured_data)
-			graph_features = subject_graph.graph_features # save time by not using graph features
-			morphological_features = subject_graph.morphological_features
-			# concat the graph features and morphological features with the subject
-			selected_subject.update(graph_features)
-			selected_subject.update(morphological_features)
-			features.append(selected_subject)
+		# 	# retrieve the subject graph and get the morphological features and graph features
+		# 	subject_graph = SubjectGraph(unstructured_data)
+		# 	graph_features = subject_graph.graph_features # save time by not using graph features
+		# 	morphological_features = subject_graph.morphological_features
+		# 	# concat the graph features and morphological features with the subject
+		# 	selected_subject.update(graph_features)
+		# 	selected_subject.update(morphological_features)
+		# 	features.append(selected_subject)
    	
-    # convert of list of dictionaries to a dataframe
-	df = pd.DataFrame(features)
-	# replace the NaN values with 0
-	df = df.fillna(0)
+    # # convert of list of dictionaries to a dataframe
+	# df = pd.DataFrame(features)
+	# # replace the NaN values with 0
+	# df = df.fillna(0)
  
+	# load the dataframe from csv file
+	df = pd.read_excel('sample_data/subjects_reduced.xlsx')
 	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
    
 	with st.form("Question"):
