@@ -1,35 +1,54 @@
 from .subject_graph import SubjectGraph
 
 class SubjectsManager:
+    """
+    A class that manages subjects and their associated data.
+
+    Attributes:
+        subjects (dict): A dictionary that stores the subjects, where the keys are the subject identifiers
+                         and the values are the corresponding SubjectGraph objects.
+
+    Methods:
+        __init__(): Initializes an empty SubjectsManager object.
+        add_subject(identifier, swc_file): Adds a new subject to the manager with the given identifier and SWC file.
+        get_subject(identifier): Retrieves the subject with the given identifier from the manager.
+        get_all_subjects(): Returns a list of all subject identifiers in the manager.
+    """
+
     def __init__(self):
+        """
+        Initializes an empty SubjectsManager object.
+        """
         self.subjects = {}
 
-    def add_subject(self, identifier, swc_file):
-        self.subjects[identifier] = SubjectGraph(swc_file)
+    def add_subject(self, identifier, swc_string):
+        """
+        Adds a new subject to the manager with the given identifier and SWC file.
+
+        Args:
+            identifier (str): The identifier of the subject.
+            swc_file (str): The file path of the SWC file associated with the subject.
+        """
+        self.subjects[identifier] = SubjectGraph(swc_string)
 
     def get_subject(self, identifier):
+        """
+        Retrieves the subject with the given identifier from the manager.
+
+        Args:
+            identifier (str): The identifier of the subject.
+
+        Returns:
+            SubjectGraph or None: The SubjectGraph object associated with the identifier,
+                                 or None if the identifier is not found.
+        """
         return self.subjects.get(identifier, None)
-    
-    # write a method to get all subjects' identifiers
+
     def get_all_subjects(self):
+        """
+        Returns a list of all subject identifiers in the manager.
+
+        Returns:
+            list: A list of all subject identifiers.
+        """
         return list(self.subjects.keys())
-        
-            
-# if __name__ == "__main__":
-#     # Create an instance of SubjectsManager
-#     manager = SubjectsManager()
-
-#     # Test the add_subject method
-#     manager.add_subject('subject1', '/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7001_U.swc')
-#     manager.add_subject('subject2', '/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project_git/SoftwareDev/sample_data/tracing_ves_TH_0_7002_U.swc')
-
-#     # Test the get_subject method
-#     subject1 = manager.get_subject('subject1')
-#     print(subject1)
-
-#     subject2 = manager.get_subject('subject2')
-#     print(subject2)
-
-#     # Test getting a subject that doesn't exist
-#     non_existent_subject = manager.get_subject('non_existent_subject')
-#     print(non_existent_subject)  # Should print None

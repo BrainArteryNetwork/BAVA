@@ -1,17 +1,18 @@
 import os
 import pdb
 import glob
+import requests
 import pandas as pd
 import streamlit as st
-import plotly.graph_objects as go
-import networkx as nx
-import numpy as np
-from bava.visualization3d.subjects_manager import SubjectsManager
-import plotly.graph_objects as go
+
+from bava.visualization3d.subject_graph import SubjectGraph
+from bava.api.database import BavaDB
+from bava.api.config import FAST_API_URL
+
 
 # run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
 
-def main():
+def page_viz3d():
 	"""
 	Main function for graph visualization.
 
@@ -19,25 +20,78 @@ def main():
 	calculates centrality measures for each graph, and visualizes the selected graph using Plotly.
 
 	"""
-
-	# (temporary) will be removed when connecting to the database
-	df = pd.read_excel('./sample_data/Combined_CROP-BRAVE-IPH_DemoClin.xlsx')
+	st.title('Data Summary')
+	bava_db_dict = requests.get(url=f"{FAST_API_URL}/subjects/").json()
+	bava_db = BavaDB(**bava_db_dict)
+ 
+	# Create a multiselect for different datasets
+	# the dataset names are from bava_db.subjects[i]['ID'].split('_')[0]
+	dataset_options = list(set([subject['ID'].split('_')[0] for subject in bava_db.subjects]))
+	selected_datasets = st.sidebar.multiselect('Datasets', dataset_options, default=dataset_options)
  
 	# Create a filter bar for age
-	age_range = st.sidebar.slider('Age Range', min(df['Age']), max(df['Age']), (min(df['Age']), max(df['Age'])))
-	min_age, max_age = age_range
+	age_info = bava_db.metadata.age
+	min_age, max_age = st.sidebar.slider('Age Range', age_info.min, age_info.max, (age_info.min, age_info.max))
 
-	# Filter the DataFrame based on the selected age range
-	filtered_df = df[(df['Age'] >= min_age) & (df['Age'] <= max_age)]
+	# Create a filter bar for SBP
+	sbp_info = bava_db.metadata.sbp
+	min_sbp, max_sbp = st.sidebar.slider('SBP Range', sbp_info.min, sbp_info.max, (sbp_info.min, sbp_info.max))
 
-	# Create a checkbox for diabetes
-	diabetes_option = st.sidebar.checkbox('Diabetes')
+	# Create a filter bar for DBP
+	dbp_info = bava_db.metadata.dbp
+	min_dbp, max_dbp = st.sidebar.slider('DBP Range', dbp_info.min, dbp_info.max, (dbp_info.min, dbp_info.max))
+ 
+	# Create a filter bar for HDL
+	hdl_info = bava_db.metadata.hdl
+	min_hdl, max_hdl = st.sidebar.slider('HDL Range', hdl_info.min, hdl_info.max, (hdl_info.min, hdl_info.max))
+ 
+	# Create a filter bar for LDL
+	ldl_info = bava_db.metadata.ldl
+	min_ldl, max_ldl = st.sidebar.slider('LDL Range', ldl_info.min, ldl_info.max, (ldl_info.min, ldl_info.max))
 
-	# Filter the DataFrame based on the selected diabetes option
-	if diabetes_option:
-		filtered_df = filtered_df[filtered_df['Diabetes'] > 0]
+	# Create a filter bar for TC
+	tc_info = bava_db.metadata.tc
+	min_tc, max_tc = st.sidebar.slider('Total cholestral Range', tc_info.min, tc_info.max, (tc_info.min, tc_info.max))
+
+	# Create a filter bar for TG
+	tg_info = bava_db.metadata.tg
+	min_tg, max_tg = st.sidebar.slider('TG Range', tg_info.min, tg_info.max, (tg_info.min, tg_info.max))
+
+	# Create a filter bar for Framingham score
+	framingham_info = bava_db.metadata.framingham_risk
+	min_framingham, max_framingham = st.sidebar.slider('Framingham Risk Score Range', framingham_info.min, framingham_info.max, (framingham_info.min, framingham_info.max))
+
+	# Create a selectbox for diabetes
+	diabetes_options = ['Have Diabetes', "Don't Have Diabetes", 'All']
+	diabetes_choice = st.sidebar.selectbox('Diabetes', diabetes_options, index=2)  # Set the default index to 2 for 'All'
+	diabetes_option = None
+
+	if diabetes_choice == 'Have Diabetes':
+		diabetes_option = True
+	elif diabetes_choice == "Don't Have Diabetes":
+		diabetes_option = False
 	else:
-		filtered_df = filtered_df[filtered_df['Diabetes'] == 0]
+		diabetes_option = None
+
+	# Create a selectbox for hypertension
+	hypertension_options = ['Have Hypertension', "Don't Have Hypertension", 'All']
+	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)  # Set the default index to 2 for 'All'
+	hypertension_option = None
+
+	if hypertension_choice == 'Have Hypertension':
+		hypertension_option = True
+	elif hypertension_choice == "Don't Have Hypertension":
+		hypertension_option = False
+	else:
+		hypertension_option = None
+
+	# Create multiselect for gender
+	gender_options = ['Male', 'Female']
+	gender_values = [1, 0]
+	selected_genders = st.sidebar.multiselect('Gender', gender_options, default=gender_options)
+ 
+	# Map the selected gender to their corresponding values
+	selected_gender_values = [gender_values[gender_options.index(gender)] for gender in selected_genders]
 
 	# Create checkboxes for race
 	race_options = ['Native American', 'Pacific Islander', 'Asian', 'Caucasian', 'African American', 'Multiple Races', 'Other']
@@ -47,42 +101,36 @@ def main():
 	# Map the selected races to their corresponding values
 	selected_race_values = [race_values[race_options.index(race)] for race in selected_races]
 
-	# Filter the DataFrame based on the selected race options
-	filtered_df = filtered_df[filtered_df['Race'].isin(selected_race_values)]
+	filter_options = {
+		"datasets": selected_datasets if selected_datasets else dataset_options,
+		"age": (min_age, max_age),
+		"sbp": (min_sbp, max_sbp),
+		"dbp": (min_dbp, max_dbp),
+		"hdl": (min_hdl, max_hdl),
+		"ldl": (min_ldl, max_ldl),
+		"tc": (min_tc, max_tc),
+		"tg": (min_tg, max_tg),
+		"framingham_risk": (min_framingham, max_framingham),
+		"diabetes": diabetes_option,
+		"hypertension": hypertension_option,
+		"genders": selected_gender_values if selected_gender_values else gender_values,
+  		"race": selected_race_values if selected_race_values else race_values,}
 
-	# Display the filtered DataFrame
-	st.dataframe(filtered_df)
-
-	data_path = './sample_data'
-	# data_path = '/Users/kennyzhang/UW/Courses/CSE 583 Software Development For Data Scientists/project/data/BRAVE'
-
-	# Use glob to get a list of SWC files in the data_path directory
-	file_list = glob.glob(os.path.join(data_path, '*.swc'))
-
-	dataset_name = data_path.split('/')[-1]
-
-	manager = SubjectsManager()
-	# Iterate over the files
-	for i, file_name in enumerate(file_list):
-		# Create the case name
-		case_id = file_name.split('/')[-1].split('_')[-2]
-		case_name = f"{dataset_name}: {case_id}"
-		# Get the full file path
-		file_path = file_name
-		# file_path = os.path.join(data_path, file_name)
-
-		# Create the graph object and assign it to the case
-		manager.add_subject(case_name, file_path)
+	filtered_subjects = requests.post(url=f"{FAST_API_URL}/filter/", json=filter_options).json()
+	if not filtered_subjects:
+		st.markdown("No records found for applied filters! Please update your filters.")
+	
+	else:
+		st.markdown(f"{len(filtered_subjects)} records found!")
+		subject_ids = [subject['ID'] for subject in filtered_subjects]
+		selected_id = st.selectbox('Select a record:', subject_ids)
+		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
+		unstructured_data = selected_subject.pop("unstructured_data")
+		G = SubjectGraph(unstructured_data)
+		st.dataframe(selected_subject)
 
 	# Streamlit app
 	st.title('Graph Visualization')
-	# st.set_page_config(layout="wide")
-
-	# Sidebar for selecting a case
-	selected_case = st.sidebar.selectbox('Select a case:', manager.get_all_subjects())
-
-	# Get the selected graph
-	G = manager.get_subject(selected_case)
 
 	# Create the Plotly figure
 	fig = G.create_interactive_plot()
@@ -90,5 +138,10 @@ def main():
 	# Show the figure in Streamlit
 	st.plotly_chart(fig)
 
+	# Add a button at upper right corner to go back to the homepage
+	if st.button('Back to Homepage'):
+		st.balloons()
+		st.stop()
+
 if __name__ == "__main__":
-	main()
+	page_viz3d()
