@@ -3,20 +3,16 @@ from bava.streamlit.streamlit_pandasai import page_pandasai
 from bava.streamlit.streamlit_visualization3d import page_viz3d
 
 def home_page():
-    """
-    Sample function for adding extra pages.
-    """
     st.title("Brain Artery Visualization and Analysis")
-    st.write("Software and App Development")
 
-    button1 = st.button("3D Visualization")
-    button2 = st.button("BAVA AI")
+    # Hidden radio button to store the state
+    state = st.radio("", ("Home", "Brain Network Visualization 3D", "BAVA AI"), index=0, key="hidden_state")
 
-    if button1:
-        page_viz3d()  # Call the page_viz3d function when button1 is clicked
+    if state == "Brain Network Visualization 3D":
+        page_viz3d()
 
-    if button2:
-        page_pandasai()  # Call the page_pandasai function when button2 is clicked
+    if state == "BAVA AI":
+        page_pandasai()
 
 if __name__ == "__main__":
     home_page()
