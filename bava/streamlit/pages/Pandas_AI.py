@@ -1,24 +1,39 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
+This module uses pandasai and streamlit to produce a web-based app with data
+visualizations for a brain artery network dataset
 """
+import os
+import pdb
 import json
 import requests
+import pandas as pd
 import streamlit as st
+from pandasai import SmartDataframe
+from pandasai.llm import OpenAI
 
-from bava.visualization3d.subject_graph import SubjectGraph
 from bava.api.database import BavaDB
 from bava.api.config import FAST_API_URL
+from bava.visualization3d.subject_graph import SubjectGraph
 
-# run with 'streamlit run ./bava/streamlit/data_visualization3d.py' in repository root
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
-def page_viz3d():
+def page_pandasai():
 	"""
-	Main function for graph visualization.
-
-	This function reads SWC files from a specified directory, creates graph objects from the SWC files,
-	calculates centrality measures for each graph, and visualizes the selected graph using Plotly.
+	Produces the text input for the pandasai feature of the app. Users enter their
+	prompt directly and then pandasai uploads the corresponding visualization.
 
 	"""
-	st.title('Data Summary')
+	st.title("Hi, I'm BAVA AI!" + "\nHow can I help you today?")
+
+	if not os.environ.get('OPENAI_API_KEY'):
+		st.subheader("OpenAI API Key missing!! Please add/update your OpenAI API key.")
+		return
+	
+	secret_values = os.environ['OPENAI_API_KEY'] #use the command 'export OPENAI_API_KEY={your API key}' 
+	llm = OpenAI(api_token=secret_values)
+ 
 	bava_db_dict = requests.get(url=f"{FAST_API_URL}/subjects/").json()
 	bava_db = BavaDB(**bava_db_dict)
  
@@ -76,7 +91,8 @@ def page_viz3d():
 
 	# Create a selectbox for hypertension
 	hypertension_options = ['Have Hypertension', "Don't Have Hypertension", 'All']
-	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)  # Set the default index to 2 for 'All'
+	# Set the default index to 2 for 'All'
+	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)
 	hypertension_option = None
 
 	if hypertension_choice == 'Have Hypertension':
@@ -123,23 +139,87 @@ def page_viz3d():
 		st.markdown("No records found for applied filters! Please update your filters.")
 	
 	else:
-		st.subheader(f"**{len(filtered_subjects)} records found!**")
-		subject_ids = [subject['ID'] for subject in filtered_subjects]
-		selected_id = st.selectbox('Select a record:', subject_ids)
-		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
-		unstructured_data = selected_subject.pop("unstructured_data")
+		st.markdown(f"{len(filtered_subjects)} records found!")
+		# create an empty list
+		features = []
+		for subject in filtered_subjects:
+			# print the index of the current subject among all the subjects, and the loading time
+			subject_id = subject['ID']
+			selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
+			# remove the 'unstructured_data' item from the dictionary
+			selected_subject.pop('unstructured_data')
 
-		G = SubjectGraph(unstructured_data)
-		st.dataframe(selected_subject, width=500)
+			morph_features = json.loads(selected_subject['morphological_features'])
+			selected_subject.pop('morphological_features')
+			morph_features_new = {}
+			for key, value in morph_features.items():
+				if isinstance(value, dict):
+					for k, v in value.items():
+						morph_features_new[key + '_' + k] = v
+				else:
+					morph_features_new[key] = value
 
-	# Streamlit app
-	st.title('Graph Visualization')
+			selected_subject.update(morph_features_new)
+			features.append(selected_subject)
+   	
+	# convert of list of dictionaries to a dataframe
+	df = pd.DataFrame(features)
+	# replace the NaN values with 0
+	df = df.fillna(0)
+ 
+	st.subheader("Current dataframe:")
+	st.write(df)
+ 
+	# please add a streamlit sign to tell user what graphical and morphological features they 
+	# can input into the textbox to chat with BAVA AI
+	st.write("The following are the graphical and morphological features you can use \
+		  to chat with BAVA AI, along with demographic and clinical information.")
+	st.write("Morphological features:")
+	morphological_features_expander = st.expander("Click to view morphological features")
+	with morphological_features_expander:
+		st.write("- Length")
+		st.write("- Branch Number")
+		st.write("- Side: Left or Right")
+		st.write("- Territory: Anterior Cerebral Artery, Middle Cerebral Artery, Posterior Artery")
+		st.write("- Distal or Proximal")
+ 
+	st.write("Graphical features:")
+	graphical_features_expander = st.expander("Click to view graphical features")
+	with graphical_features_expander:
+		st.write("- Average degree")
+		st.write("- Average clustering coefficient")
+		st.write("- Assortativity")
+		st.write("- Average betweenness centrality")
+		st.write("- Average closeness centrality")
+		st.write("- Average pagerank")
+		st.write("- Average degree centrality")
+		st.write("- Average edge betweenness centrality")
 
-	# Create the Plotly figure
-	fig = G.create_interactive_plot()
+	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
+   
+	st.session_state.prompt_history = []
+	with st.form("Question"):
+		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
+						   SBP across different age groups'.", value="", type="default")
+		question_sent = st.form_submit_button("Send")
+		if question_sent:
+			with st.spinner():
+				ai_output = smart_df.chat(question)
+				# print(type(ai_output))
 
-	# Show the figure in Streamlit
-	st.plotly_chart(fig)
+				if ai_output is not None:
+					st.write(str(ai_output))
+				else:
+					st.pyplot(ai_output)
+					st.write("Data visualization shared!")
+				st.session_state.prompt_history.append(question)
+     
+	st.subheader("Prompt history:")
+	st.write(st.session_state.prompt_history)
+	if st.button("Clear"):
+		st.session_state.prompt_history = []
 
+# Run the Streamlit app
 if __name__ == "__main__":
-	page_viz3d()
+	page_pandasai()
+	
