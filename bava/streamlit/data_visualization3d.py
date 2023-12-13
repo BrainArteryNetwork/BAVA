@@ -6,7 +6,7 @@ import streamlit as st
 
 from bava.visualization3d.subject_graph import SubjectGraph
 from bava.api.database import BavaDB
-from bava.api.schemas import MorphologicalFeatures
+from bava.api.schemas import GraphicalFeatures
 from bava.api.config import FAST_API_URL
 
 # run with 'streamlit run ./bava/streamlit/data_visualization3d.py' in repository root
@@ -130,7 +130,7 @@ def page_viz3d():
 		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
 		unstructured_data = selected_subject.pop("unstructured_data")
 		feat_dict = json.loads(selected_subject.pop("morphological_features"))
-		morphological_features = MorphologicalFeatures(**feat_dict)
+		morphological_features = GraphicalFeatures(**feat_dict)
 
 		G = SubjectGraph(unstructured_data)
 		st.dataframe(selected_subject, width=500)
