@@ -1,5 +1,5 @@
 from .swc2graph import swc2graph, create_interactive_plot
-from .graph_analysis import add_centrality_measures, calculate_features, morphological_features, graph_features
+from .graph_analysis import add_centrality_measures, calculate_features, calc_morphological_features, calc_graphical_features
 
 class SubjectGraph:
     """
@@ -41,7 +41,7 @@ class SubjectGraph:
         Returns:
             dict: A dictionary containing the summarized local features.
         """
-        morph_features = morphological_features(self.features)
+        morph_features = calc_morphological_features(self.features)
         # for each dictionary in morph_features, concat the key with the key in lower level dictionary and copy to a new dictionary
         morph_features_new = {}
         for key, value in morph_features.items():
@@ -50,14 +50,14 @@ class SubjectGraph:
         return morph_features_new
 
     @property
-    def graph_features(self):
+    def graphical_features(self):
         """
         Returns the graph features of the graph.
 
         Returns:
             dict: A dictionary containing the graph features.
         """
-        return graph_features(self.graph)
+        return calc_graphical_features(self.graph)
 
     def create_interactive_plot(self):
         """

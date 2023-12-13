@@ -5,8 +5,8 @@ This module uses pandasai and streamlit to produce a web-based app with data
 visualizations for a brain artery network dataset
 """
 import os
-import time
 import pdb
+import json
 import requests
 import pandas as pd
 import streamlit as st
@@ -140,35 +140,33 @@ def page_pandasai():
 		st.markdown(f"{len(filtered_subjects)} records found!")
 		# create an empty list
 		features = []
-		# for subject in filtered_subjects:
-		# 	# print the index of the current subject among all the subjects, and the loading time
-		# 	subject_id = subject['ID']
-   
-		# 	selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
-		# 	unstructured_data = selected_subject.pop("unstructured_data")
-   
-		# 	# check if unsturctured_data is None
-		# 	if unstructured_data is None:
-		# 		continue
+		for subject in filtered_subjects:
+			# print the index of the current subject among all the subjects, and the loading time
+			subject_id = subject['ID']
+			selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
+			# remove the 'unstructured_data' item from the dictionary
+			selected_subject.pop('unstructured_data')
 
-		# 	# print(f"Loading subject {filtered_subjects.index(subject) + 1} of {len(filtered_subjects)}")
+			morph_features = json.loads(selected_subject['morphological_features'])
+			selected_subject.pop('morphological_features')
+			morph_features_new = {}
+			for key, value in morph_features.items():
+				if isinstance(value, dict):
+					for k, v in value.items():
+						morph_features_new[key + '_' + k] = v
+				else:
+					morph_features_new[key] = value
 
-		# 	# retrieve the subject graph and get the morphological features and graph features
-		# 	subject_graph = SubjectGraph(unstructured_data)
-		# 	graph_features = subject_graph.graph_features # save time by not using graph features
-		# 	morphological_features = subject_graph.morphological_features
-		# 	# concat the graph features and morphological features with the subject
-		# 	selected_subject.update(graph_features)
-		# 	selected_subject.update(morphological_features)
-		# 	features.append(selected_subject)
+			selected_subject.update(morph_features_new)
+			features.append(selected_subject)
    	
-	# # convert of list of dictionaries to a dataframe
-	# df = pd.DataFrame(features)
-	# # replace the NaN values with 0
-	# df = df.fillna(0)
+	# convert of list of dictionaries to a dataframe
+	df = pd.DataFrame(features)
+	# replace the NaN values with 0
+	df = df.fillna(0)
  
-	# load the dataframe from csv file
-	df = pd.read_excel('sample_data/subjects_reduced.xlsx')
+	st.subheader("Current dataframe:")
+	st.write(df)
  
 	# please add a streamlit sign to tell user what graphical and morphological features they 
 	# can input into the textbox to chat with BAVA AI
@@ -197,6 +195,7 @@ def page_pandasai():
 
 	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
    
+	st.session_state.prompt_history = []
 	with st.form("Question"):
 		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
 						   SBP across different age groups'.", value="", type="default")
@@ -204,12 +203,19 @@ def page_pandasai():
 		if question_sent:
 			with st.spinner():
 				ai_output = smart_df.chat(question)
+				# print(type(ai_output))
 
 				if ai_output is not None:
 					st.write(str(ai_output))
 				else:
 					st.pyplot(ai_output)
 					st.write("Data visualization shared!")
+				st.session_state.prompt_history.append(question)
+     
+	st.subheader("Prompt history:")
+	st.write(st.session_state.prompt_history)
+	if st.button("Clear"):
+		st.session_state.prompt_history = []
 
 # Run the Streamlit app
 if __name__ == "__main__":
