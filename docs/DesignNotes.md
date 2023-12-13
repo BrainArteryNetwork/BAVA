@@ -1,1 +1,0 @@
-Here are some notes about the design of our project. You can find the Figma design [here](https://www.figma.com/file/ALmljgxQFA4P8mNrKK7qr4/Dashboard-UI-(Community)?type=design&node-id=314%3A2429&mode=design&t=FHmuylVKOKfAnKdh-1).
