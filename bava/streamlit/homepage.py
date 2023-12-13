@@ -1,6 +1,8 @@
+"""
+"""
 import streamlit as st
-from bava.streamlit.streamlit_pandasai import page_pandasai
-from bava.streamlit.streamlit_visualization3d import page_viz3d
+from bava.streamlit.pandas_ai import page_pandasai
+from bava.streamlit.data_visualization3d import page_viz3d
 
 def home_page():
     st.title("Brain Artery Visualization and Analysis")

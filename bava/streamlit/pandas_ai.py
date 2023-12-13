@@ -70,11 +70,14 @@ def page_pandasai():
 
 	# Create a filter bar for Framingham score
 	framingham_info = bava_db.metadata.framingham_risk
-	min_framingham, max_framingham = st.sidebar.slider('Framingham Risk Score Range', framingham_info.min, framingham_info.max, (framingham_info.min, framingham_info.max))
+	min_framingham, max_framingham = st.sidebar.slider('Framingham Risk Score Range', 
+													framingham_info.min, framingham_info.max, 
+													(framingham_info.min, framingham_info.max))
 
 	# Create a selectbox for diabetes
 	diabetes_options = ['Have Diabetes', "Don't Have Diabetes", 'All']
-	diabetes_choice = st.sidebar.selectbox('Diabetes', diabetes_options, index=2)  # Set the default index to 2 for 'All'
+	# Set the default index to 2 for 'All'
+	diabetes_choice = st.sidebar.selectbox('Diabetes', diabetes_options, index=2) 
 	diabetes_option = None
 
 	if diabetes_choice == 'Have Diabetes':
@@ -86,7 +89,8 @@ def page_pandasai():
 
 	# Create a selectbox for hypertension
 	hypertension_options = ['Have Hypertension', "Don't Have Hypertension", 'All']
-	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)  # Set the default index to 2 for 'All'
+	# Set the default index to 2 for 'All'
+	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)
 	hypertension_option = None
 
 	if hypertension_choice == 'Have Hypertension':
@@ -105,7 +109,8 @@ def page_pandasai():
 	selected_gender_values = [gender_values[gender_options.index(gender)] for gender in selected_genders]
 
 	# Create checkboxes for race
-	race_options = ['Native American', 'Pacific Islander', 'Asian', 'Caucasian', 'African American', 'Multiple Races', 'Other']
+	race_options = ['Native American', 'Pacific Islander', 'Asian', 'Caucasian', 
+				 'African American', 'Multiple Races', 'Other']
 	race_values = [1, 2, 3, 4, 5, 6, 7]
 	selected_races = st.sidebar.multiselect('Race', race_options, default=race_options)
 
@@ -165,8 +170,10 @@ def page_pandasai():
 	# load the dataframe from csv file
 	df = pd.read_excel('sample_data/subjects_reduced.xlsx')
  
-	# please add a streamlit sign to tell user what graphical and morphological features they can input into the textbox to chat with BAVA AI
-	st.write("The following are the graphical and morphological features you can use to chat with BAVA AI, along with demographic and clinical information.")
+	# please add a streamlit sign to tell user what graphical and morphological features they 
+	# can input into the textbox to chat with BAVA AI
+	st.write("The following are the graphical and morphological features you can use \
+		  to chat with BAVA AI, along with demographic and clinical information.")
 	st.write("Morphological features:")
 	morphological_features_expander = st.expander("Click to view morphological features")
 	with morphological_features_expander:
@@ -191,7 +198,8 @@ def page_pandasai():
 	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
    
 	with st.form("Question"):
-		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average SBP across different age groups'.", value="", type="default")
+		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
+						   SBP across different age groups'.", value="", type="default")
 		question_sent = st.form_submit_button("Send")
 		if question_sent:
 			with st.spinner():
