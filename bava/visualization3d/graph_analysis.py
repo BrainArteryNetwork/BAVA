@@ -14,7 +14,6 @@ Example usage:
     graph_analysis(G)
 """
 import re
-import pdb
 import math
 import networkx as nx
 import numpy as np
@@ -191,7 +190,7 @@ def calculate_features(G):
 
     return artery_features
 
-def morphological_features(feature_dict):
+def calc_morphological_features(feature_dict):
     """
     Calculate morphological features based on a given feature dictionary.
 
@@ -385,7 +384,7 @@ def morphological_features(feature_dict):
     }
     return feature_dict
 
-def graph_features(G):
+def calc_graphical_features(G):
     """
     Calculate the graph features of the graph.
 

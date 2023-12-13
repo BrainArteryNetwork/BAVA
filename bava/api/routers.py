@@ -27,7 +27,7 @@ from .database import (filter_dataset,
                         filter_hdl, filter_ldl,
                       BavaDB)
 from .config import create_sql_engine
-from .schemas import FilterDB, Subject, SubjectRecord, GraphicalFeatures
+from .schemas import FilterDB, Subject, SubjectRecord, GraphicalFeatures, MorphologicalFeatures
 
 app = FastAPI(title="BAVA API",
               description="API to get subject information for BAVA DB",
@@ -86,7 +86,7 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
         raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
     return subject
 
-@app.get("/subject_morphological_features/{subject_id}", response_model=GraphicalFeatures)
+@app.get("/subject_morphological_features/{subject_id}", response_model=MorphologicalFeatures)
 async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
     """
     """
@@ -94,6 +94,15 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
     if not subject:
         raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
     return json.loads(subject.morphological_features)
+
+@app.get("/subject_graphical_features/{subject_id}", response_model=GraphicalFeatures)
+async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
+    """
+    """
+    subject = session.get(Subject, subject_id)
+    if not subject:
+        raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
+    return json.loads(subject.graphical_features)
 
 
 @app.post("/filter/", response_model=List[SubjectRecord])
