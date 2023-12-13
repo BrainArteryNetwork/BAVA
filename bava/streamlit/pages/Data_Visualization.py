@@ -1,39 +1,33 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-This module uses pandasai and streamlit to produce a web-based app with data
-visualizations for a brain artery network dataset
+	This streamlit module contains elements for visualizaing/analysing the data.
+	User can filter the data and analyse selective subjects.
+	Plotly is used for 3D visualization of a patient's brain artery network.
+
+	run with 'streamlit run ./bava/streamlit/pages/Data_Visualization.py' in repository root
 """
-import os
-import time
-import pdb
+import json
 import requests
-import pandas as pd
 import streamlit as st
-from pandasai import SmartDataframe
-from pandasai.llm import OpenAI
 
-from bava.api.database import BavaDB
-from bava.api.config import FAST_API_URL
 from bava.visualization3d.subject_graph import SubjectGraph
+from bava.api.database import BavaDB
+from bava.api.schemas import GraphicalFeatures
+from bava.api.config import FAST_API_URL
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
-def page_pandasai():
+def page_viz3d():
 	"""
-	Produces the text input for the pandasai feature of the app. Users enter their
-	prompt directly and then pandasai uploads the corresponding visualization.
+	Main function for graph visualization.
+
+	This function reads SWC files from a specified directory, creates graph objects from the SWC files,
+	calculates centrality measures for each graph, and visualizes the selected graph using Plotly.
 
 	"""
-	
-	secret_values = os.environ['OPENAI_API_KEY'] #use the command 'export OPENAI_API_KEY={your API key}' 
-	llm = OpenAI(api_token=secret_values)
- 
-	st.title("Hi, I'm BAVA AI!" + "\nHow can I help you today?")
- 
-	# st.title('Data Summary')
+	st.title('Data Visualization')
 	bava_db_dict = requests.get(url=f"{FAST_API_URL}/subjects/").json()
 	bava_db = BavaDB(**bava_db_dict)
+
+	st.sidebar.header("Filters")
  
 	# Create a multiselect for different datasets
 	# the dataset names are from bava_db.subjects[i]['ID'].split('_')[0]
@@ -90,7 +84,7 @@ def page_pandasai():
 	# Create a selectbox for hypertension
 	hypertension_options = ['Have Hypertension', "Don't Have Hypertension", 'All']
 	# Set the default index to 2 for 'All'
-	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2)
+	hypertension_choice = st.sidebar.selectbox('Hypertension', hypertension_options, index=2) 
 	hypertension_option = None
 
 	if hypertension_choice == 'Have Hypertension':
@@ -137,81 +131,25 @@ def page_pandasai():
 		st.markdown("No records found for applied filters! Please update your filters.")
 	
 	else:
-		st.markdown(f"{len(filtered_subjects)} records found!")
-		# create an empty list
-		features = []
-		# for subject in filtered_subjects:
-		# 	# print the index of the current subject among all the subjects, and the loading time
-		# 	subject_id = subject['ID']
-   
-		# 	selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
-		# 	unstructured_data = selected_subject.pop("unstructured_data")
-   
-		# 	# check if unsturctured_data is None
-		# 	if unstructured_data is None:
-		# 		continue
+		st.subheader(f"**{len(filtered_subjects)} records found!**")
+		subject_ids = [subject['ID'] for subject in filtered_subjects]
+		selected_id = st.selectbox('Select a record:', subject_ids)
+		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
+		unstructured_data = selected_subject.pop("unstructured_data")
+		feat_dict = json.loads(selected_subject.pop("morphological_features"))
+		morphological_features = GraphicalFeatures(**feat_dict)
 
-		# 	# print(f"Loading subject {filtered_subjects.index(subject) + 1} of {len(filtered_subjects)}")
+		G = SubjectGraph(unstructured_data)
+		st.dataframe(selected_subject, width=500)
 
-		# 	# retrieve the subject graph and get the morphological features and graph features
-		# 	subject_graph = SubjectGraph(unstructured_data)
-		# 	graph_features = subject_graph.graph_features # save time by not using graph features
-		# 	morphological_features = subject_graph.morphological_features
-		# 	# concat the graph features and morphological features with the subject
-		# 	selected_subject.update(graph_features)
-		# 	selected_subject.update(morphological_features)
-		# 	features.append(selected_subject)
-   	
-	# # convert of list of dictionaries to a dataframe
-	# df = pd.DataFrame(features)
-	# # replace the NaN values with 0
-	# df = df.fillna(0)
- 
-	# load the dataframe from csv file
-	df = pd.read_excel('sample_data/subjects_reduced.xlsx')
- 
-	# please add a streamlit sign to tell user what graphical and morphological features they 
-	# can input into the textbox to chat with BAVA AI
-	st.write("The following are the graphical and morphological features you can use \
-		  to chat with BAVA AI, along with demographic and clinical information.")
-	st.write("Morphological features:")
-	morphological_features_expander = st.expander("Click to view morphological features")
-	with morphological_features_expander:
-		st.write("- Length")
-		st.write("- Branch Number")
-		st.write("- Side: Left or Right")
-		st.write("- Territory: Anterior Cerebral Artery, Middle Cerebral Artery, Posterior Artery")
-		st.write("- Distal or Proximal")
- 
-	st.write("Graphical features:")
-	graphical_features_expander = st.expander("Click to view graphical features")
-	with graphical_features_expander:
-		st.write("- Average degree")
-		st.write("- Average clustering coefficient")
-		st.write("- Assortativity")
-		st.write("- Average betweenness centrality")
-		st.write("- Average closeness centrality")
-		st.write("- Average pagerank")
-		st.write("- Average degree centrality")
-		st.write("- Average edge betweenness centrality")
+	# Streamlit app
+	st.title('Graph Visualization')
 
-	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
-   
-	with st.form("Question"):
-		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
-						   SBP across different age groups'.", value="", type="default")
-		question_sent = st.form_submit_button("Send")
-		if question_sent:
-			with st.spinner():
-				ai_output = smart_df.chat(question)
+	# Create the Plotly figure
+	fig = G.create_interactive_plot()
 
-				if ai_output is not None:
-					st.write(str(ai_output))
-				else:
-					st.pyplot(ai_output)
-					st.write("Data visualization shared!")
+	# Show the figure in Streamlit
+	st.plotly_chart(fig)
 
-# Run the Streamlit app
 if __name__ == "__main__":
-	page_pandasai()
-	
+	page_viz3d()
