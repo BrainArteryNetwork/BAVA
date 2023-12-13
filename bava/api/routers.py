@@ -13,6 +13,7 @@ Attributes:
     app (FastAPI): A FastAPI application object.
     engine (Engine): A SQLModel engine object for connecting to the database.
 """
+import json
 from typing import List, Dict
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session, SQLModel, select
@@ -26,7 +27,7 @@ from .database import (filter_dataset,
                         filter_hdl, filter_ldl,
                       BavaDB)
 from .config import create_sql_engine
-from .schemas import FilterDB, Subject, SubjectRecord
+from .schemas import FilterDB, Subject, SubjectRecord, MorphologicalFeatures
 
 app = FastAPI(title="BAVA API",
               description="API to get subject information for BAVA DB",
@@ -84,6 +85,16 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
     if not subject:
         raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
     return subject
+
+@app.get("/subject_morphological_features/{subject_id}", response_model=MorphologicalFeatures)
+async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
+    """
+    """
+    subject = session.get(Subject, subject_id)
+    if not subject:
+        raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
+    return json.loads(subject.morphological_features)
+
 
 @app.post("/filter/", response_model=List[SubjectRecord])
 async def get_filtered_data(*, session: Session = Depends(get_session), filter_options: FilterDB):

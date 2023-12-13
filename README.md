@@ -1,6 +1,6 @@
 # Brain Artery Visualization & Analysis Tool (BAVA)
 
-BAVA is a cutting-edge online platform designed for medical researchers focusing on neurology, particularly in the study of brain artery networks. It integrates powerful visualization tools with statistical analysis and machine learning capabilities to facilitate the exploration and prediction of vascular diseases.
+BAVA is a cutting-edge online platform designed for medical researchers focusing on neurology, particularly in the study of brain artery networks. It integrates powerful visualization tools with statistical analysis and artificial intelligence (AI) capabilities to facilitate the exploration and analysis of vascular diseases.
 
 ## Features
 
@@ -8,7 +8,7 @@ BAVA is a cutting-edge online platform designed for medical researchers focusing
 - **Data Filtering**: Advanced filtering options to refine datasets based on demographic, clinical, and morphological criteria.
 - **Statistical Analysis**: Built-in tools for conducting basic statistical analysis, providing insights into the dataset through visual representations.
 - **Digital Twin Simulation**: Creation of digital twins for simulated studies and analyses of brain artery networks.
-- **Predictive Modeling**: Machine learning models to predict disease progression and outcomes based on historical and real-time data.
+- **Data Exploration**: AI models to help users explore and draw conclusions based on historical data.
 
 ## Getting Started
 
@@ -17,26 +17,28 @@ To get started with BAVA, please follow the instructions below:
 ### Prerequisites
 
 - Ensure you have a modern web browser installed (Chrome, Firefox, Safari, Edge).
-- Access to the internet for online data retrieval and processing.
+- Download and install Python on your computer.
+- Have access to your OPENAI API token for AI model-based functions.
 
 ### Installation
 
-BAVA is a web-based platform and does not require any installation. Simply navigate to [BAVA's website](#) to access the tool.
+BAVA is a web-based platform and does not require any installation. Simply fork this repository and follow the instructions in the demo video.
 
 ## Usage
 
-1. **Data Import**: Upload angiography data to the platform using the provided interface.
-2. **Data Operation**: Perform CRUD operations and manipulate visualization parameters through the GUI.
-3. **Filtering Data**: Use the filter/search features to segment the data based on your research needs.
-4. **Visualization**: Interact with the 3D brain artery graphs and utilize the multi-dimensional scaling features for complex datasets.
-5. **Analysis**: Generate statistical reports and leverage the machine learning models for predictive analysis.
-6. **Export**: Download your processed data and visualizations for further use or publication.
+1. **Data Operation**: Perform CRUD operations and manipulate visualization parameters through the GUI.
+2. **Filtering Data**: Use the filter/search features to segment the data based on your research needs.
+3. **Visualization**: Interact with the 3D brain artery graphs and utilize the multi-dimensional scaling features for complex datasets.
+4. **Analysis**: Generate descriptive statistics and leverage the AI model for data exploration and analysis.
+5. **Export**: Download your processed data and visualizations for further use or publication.
 
 ## Documentation
 
 For detailed instructions on how to use BAVA and its features, please refer to the [User Guide](#).
 
-Tech Review: https://docs.google.com/presentation/d/14t-2LbsM4omQmxrEsxg8eQA_u8WlDCPD/edit?usp=sharing&ouid=101891819175501468829&rtpof=true&sd=true
+Technology Review: BrainArteryNetwork/SoftwareDev/docs/TechnologyReview.pptx
+Component Specification: BrainArteryNetwork/SoftwareDev/docs/Component_specification.md
+Functional Specification: BrainArteryNetwork/SoftwareDev/docs/Functional_specification.md
 
 ## Contributing
 
@@ -51,7 +53,7 @@ If you need assistance or wish to report a bug, please email our support team at
 - Kaiyu Zhang
 - Sharan Ranjit S
 - David Prendez
--  Cherin Lim
+- Cherin Lim
 
 See also the list of [contributors](#) who participated in this project.
 
@@ -61,4 +63,4 @@ This project is licensed under the [MIT License](LICENSE.md) - see the LICENSE.m
 
 ## Acknowledgments
 
-- University of Washington CSE 583, professor Dave Baker
+- University of Washington CSE 583, Professor Dave Baker
