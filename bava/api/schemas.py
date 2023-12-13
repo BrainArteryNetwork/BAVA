@@ -147,6 +147,7 @@ class Subject(SQLModel, table=True):
         Race (Race): The race of the subject.
         unstructured_data (Optional[str]): unstructured brain artery network data extracted from .swc file for the subject.
         morphological_features (Optional[str]): Additional morphological features for the subject.
+        graphical_features (Optional[str]): Additional graphical features for the subject.
     """
     __tablename__ = "subjects"
     __table_args__ = {'extend_existing': True} 
@@ -167,7 +168,7 @@ class Subject(SQLModel, table=True):
     Race: Race
     unstructured_data: Optional[str]
     morphological_features: Optional[str]
-
+    # graphical_features: Optional[str]
 
 class SubjectRecord(SQLModel):
     """
