@@ -1,5 +1,8 @@
 """
     This module displays the home page of the Brain Artery Visualization and Analysis app.
+    This is the landing page. Pages are organized as per multi-page streamlit app design.
+    All new pages will go in streamlit/pages/ dir.
+    Title of the page is the filename.
 """
 import streamlit as st
 

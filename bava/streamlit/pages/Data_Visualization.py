@@ -11,7 +11,7 @@ import streamlit as st
 
 from bava.visualization3d.subject_graph import SubjectGraph
 from bava.api.database import BavaDB
-from bava.api.config import FAST_API_URL
+from bava.api.config import FAST_API_URL, SQL_DB_URL
 
 
 def page_viz3d():
@@ -23,8 +23,14 @@ def page_viz3d():
 
 	"""
 	st.title('Data Visualization')
-	bava_db_dict = requests.get(url=f"{FAST_API_URL}/subjects/").json()
-	bava_db = BavaDB(**bava_db_dict)
+
+	try:
+		bava_db_dict = requests.get(url=f"{FAST_API_URL}/subjects/").json()
+		bava_db = BavaDB(**bava_db_dict)
+
+	except Exception:
+		st.code(f"Error in retrieving subject records! \nYour database file: {SQL_DB_URL} is empty (or missing)!")
+		return
 
 	st.sidebar.header("Filters")
  
