@@ -141,6 +141,7 @@ def page_pandasai():
 	else:
 		st.markdown(f"{len(filtered_subjects)} records found!")
 		# create an empty list
+<<<<<<< Updated upstream:bava/streamlit/pages/Pandas_AI.py
 		features = []
 		for subject in filtered_subjects:
 			# print the index of the current subject among all the subjects, and the loading time
@@ -161,6 +162,30 @@ def page_pandasai():
 
 			selected_subject.update(morph_features_new)
 			features.append(selected_subject)
+=======
+	# 	features = []
+	# 	for subject in filtered_subjects:
+	# 		# print the index of the current subject among all the subjects, and the loading time
+	# 		subject_id = subject['ID']
+   
+	# 		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{subject_id}").json()
+	# 		unstructured_data = selected_subject.pop("unstructured_data")
+   
+	# 		# check if unsturctured_data is None
+	# 		if unstructured_data is None:
+	# 			continue
+
+	# 		print(f"Loading subject {filtered_subjects.index(subject) + 1} of {len(filtered_subjects)}")
+
+	# 		# retrieve the subject graph and get the morphological features and graph features
+	# 		subject_graph = SubjectGraph(unstructured_data)
+	# 		graph_features = subject_graph.graph_features # save time by not using graph features
+	# 		morphological_features = subject_graph.morphological_features
+	# 		# concat the graph features and morphological features with the subject
+	# 		selected_subject.update(graph_features)
+	# 		selected_subject.update(morphological_features)
+	# 		features.append(selected_subject)
+>>>>>>> Stashed changes:bava/streamlit/streamlit_pandasai.py
    	
 	# convert of list of dictionaries to a dataframe
 	df = pd.DataFrame(features)
