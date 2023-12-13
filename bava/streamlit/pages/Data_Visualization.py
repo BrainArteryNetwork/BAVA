@@ -133,7 +133,8 @@ def page_viz3d():
 
 	filtered_subjects = requests.post(url=f"{FAST_API_URL}/filter/", json=filter_options).json()
 	if not filtered_subjects:
-		st.markdown("No records found for applied filters! Please update your filters.")
+		st.code("No records found for applied filters! Please update your filters.")
+		return
 	
 	else:
 		st.subheader(f"**{len(filtered_subjects)} records found!**")
