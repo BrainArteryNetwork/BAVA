@@ -24,6 +24,16 @@ To get started with BAVA, please follow the instructions below:
 
 BAVA is a web-based platform and does not require any installation. Simply fork this repository and follow the instructions in the demo video.
 
+### Setting up locally
+
+1. Clone/fork this repo
+2. Install all pacakges using environment.yml (or setup.py)
+3. Unzip subjects_all.db.zip file to data directory. It should unzip to `subjects_all.db` file (~56MB)
+4. Export `PYTHONPATH` to include repo root: `export PYTHONPATH="${PYTHONPATH}:/path/to/repo/"`
+5. Open terminal, start Fast API, run from repo root: `uvicorn bava.api.routers:app --reload`
+6. In another terminal, start Streamlit, run from repo root: `streamlit run ./bava/streamlit/homepage.py`
+7. Play around with BAVA 🧠
+
 ## Usage
 
 1. **Data Operation**: Perform CRUD operations and manipulate visualization parameters through the GUI.
