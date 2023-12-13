@@ -27,7 +27,7 @@ from .database import (filter_dataset,
                         filter_hdl, filter_ldl,
                       BavaDB)
 from .config import create_sql_engine
-from .schemas import FilterDB, Subject, SubjectRecord, MorphologicalFeatures
+from .schemas import FilterDB, Subject, SubjectRecord, GraphicalFeatures
 
 app = FastAPI(title="BAVA API",
               description="API to get subject information for BAVA DB",
@@ -86,7 +86,7 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
         raise HTTPException(status_code=404, detail=f"Subject with id:{subject_id} not found")
     return subject
 
-@app.get("/subject_morphological_features/{subject_id}", response_model=MorphologicalFeatures)
+@app.get("/subject_morphological_features/{subject_id}", response_model=GraphicalFeatures)
 async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
     """
     """
