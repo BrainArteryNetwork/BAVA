@@ -1,4 +1,11 @@
 """
+This module contains functions and variables for managing the database.
+
+    FAST_API_URL: A string representing the URL of the FastAPI server.
+    SQL_TABLE_NAME: A string representing the name of the SQL table.
+    SQL_DB_FILENAME: A string representing the name of the SQL database file.
+    SQL_DB_URL: A string representing the URL of the SQL database.
+
 """
 from sqlmodel import create_engine
 

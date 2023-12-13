@@ -34,15 +34,6 @@ class Race(Enum):
     multiple_race = 6
     not_provided = 7
 
-
-class Info(BaseModel):
-    """
-    """
-    min: int | float = 0
-    max: int | float = 0
-    avg: float = 0
-
-
 class MorphologicalFeatures(BaseModel):
     """
     Represents the features of an artery.
@@ -125,7 +116,6 @@ class GraphicalFeatures(BaseModel):
     average_degree_centrality: float
     average_edge_betweenness_centrality: float
 
-
 class Subject(SQLModel, table=True):
     """
     Represents a subject in the study.
@@ -172,23 +162,9 @@ class Subject(SQLModel, table=True):
 
 class SubjectRecord(SQLModel):
     """
-    Represents a subject in the study.
-
-    Attributes:
-        ID (str): The unique identifier for the subject.
-        Age (int): The age of the subject.
-        Smoking (bool): Indicates whether the subject is a smoker or not.
-        SBP (float): The systolic blood pressure of the subject.
-        DBP (float): The diastolic blood pressure of the subject.
-        Hypertension (bool): Indicates whether the subject has hypertension or not.
-        TC (float): The total cholesterol level of the subject.
-        TG (float): The triglyceride level of the subject.
-        HDL (float): The high-density lipoprotein (HDL) cholesterol level of the subject.
-        LDL (float): The low-density lipoprotein (LDL) cholesterol level of the subject.
-        Diabetes (bool): Indicates whether the subject has diabetes or not.
-        Framingham_Risk (float): The Framingham Risk Score of the subject.
-        Gender (Gender): The gender of the subject.
-        Race (Race): The race of the subject.
+    This SQLModel class is a response-only class for fast retrieval of subjects.
+    Duplicate fields from 'Subject' are used to retrieve only relevent fields.
+    Ref: https://sqlmodel.tiangolo.com/tutorial/fastapi/multiple-models/
     """
     ID: str
     Age: int
@@ -204,6 +180,21 @@ class SubjectRecord(SQLModel):
     Framingham_Risk: float
     Gender: Gender
     Race: Race
+
+class Info(BaseModel):
+    """
+    Class to encapsulate metadata info of each feature.
+    Primary usecase is to have this class containing all statistics for each feature.
+    See MetadataDB for more details.
+    Attributes:
+        min (int|float): Minimum value of feature/field
+        max (int|float): Maximum value of feature/field
+        avg (int|float): Average value of feature/field
+    """
+    min: int | float = 0
+    max: int | float = 0
+    avg: float = 0
+
 
 class MetadataDB(BaseModel):
     """
@@ -231,10 +222,12 @@ class MetadataDB(BaseModel):
 
 class FilterDB(BaseModel):
     """
-    Represents a subject in the study.
+    This class encapsulates the different ranges possible for each field. 
+    The range is defined by user and used as input to Fast API routers.
 
     Attributes:
         ID (str): The unique identifier for the subject.
+        datasets [str]: Possible list of datasets.
         Age (int): The age of the subject.
         Smoking (bool): Indicates whether the subject is a smoker or not.
         SBP (float): The systolic blood pressure of the subject.
