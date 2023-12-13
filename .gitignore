@@ -93,4 +93,5 @@ ENV/
 .DS_Store
 
 # Data
-data/
+sample_data/
+data/subjects_all.db
