@@ -161,16 +161,36 @@ def page_pandasai():
 
 			selected_subject.update(morph_features_new)
 			features.append(selected_subject)
-   	
+
 	# convert of list of dictionaries to a dataframe
 	df = pd.DataFrame(features)
 	# replace the NaN values with 0
 	df = df.fillna(0)
- 
+
+	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
+   
+	st.session_state.prompt_history = []
+	with st.form("Question"):
+		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
+						   SBP across different age groups'.", value="", type="default")
+		question_sent = st.form_submit_button("Send")
+		if question_sent:
+			with st.spinner():
+				ai_output = smart_df.chat(question)
+				# print(type(ai_output))
+
+				if ai_output is not None:
+					st.write(str(ai_output))
+				else:
+					st.pyplot(ai_output)
+					st.write("Data visualization shared!")
+				st.session_state.prompt_history.append(question)
+	
+	# show the current dataframe
 	st.subheader("Current dataframe:")
 	st.write(df)
  
-	# please add a streamlit sign to tell user what graphical and morphological features they 
+	# add a streamlit sign to tell user what graphical and morphological features they 
 	# can input into the textbox to chat with BAVA AI
 	st.write("The following are the graphical and morphological features you can use \
 		  to chat with BAVA AI, along with demographic and clinical information.")
@@ -194,26 +214,7 @@ def page_pandasai():
 		st.write("- Average pagerank")
 		st.write("- Average degree centrality")
 		st.write("- Average edge betweenness centrality")
-
-	smart_df = SmartDataframe(df, config={"llm": llm,"enable_cache": False,"save_charts": False,},)
-   
-	st.session_state.prompt_history = []
-	with st.form("Question"):
-		question = st.text_input("Message BAVA AI below. For example, type 'Plot the average \
-						   SBP across different age groups'.", value="", type="default")
-		question_sent = st.form_submit_button("Send")
-		if question_sent:
-			with st.spinner():
-				ai_output = smart_df.chat(question)
-				# print(type(ai_output))
-
-				if ai_output is not None:
-					st.write(str(ai_output))
-				else:
-					st.pyplot(ai_output)
-					st.write("Data visualization shared!")
-				st.session_state.prompt_history.append(question)
-     
+	 
 	st.subheader("Prompt history:")
 	st.write(st.session_state.prompt_history)
 	if st.button("Clear"):
