@@ -1,12 +1,12 @@
-import os
-import pdb
-import glob
+"""
+"""
+import json
 import requests
-import pandas as pd
 import streamlit as st
 
 from bava.visualization3d.subject_graph import SubjectGraph
 from bava.api.database import BavaDB
+from bava.api.schemas import MorphologicalFeatures
 from bava.api.config import FAST_API_URL
 
 # run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
@@ -58,11 +58,14 @@ def page_viz3d():
 
 	# Create a filter bar for Framingham score
 	framingham_info = bava_db.metadata.framingham_risk
-	min_framingham, max_framingham = st.sidebar.slider('Framingham Risk Score Range', framingham_info.min, framingham_info.max, (framingham_info.min, framingham_info.max))
+	min_framingham, max_framingham = st.sidebar.slider('Framingham Risk Score Range', 
+													framingham_info.min, framingham_info.max, 
+													(framingham_info.min, framingham_info.max))
 
 	# Create a selectbox for diabetes
 	diabetes_options = ['Have Diabetes', "Don't Have Diabetes", 'All']
-	diabetes_choice = st.sidebar.selectbox('Diabetes', diabetes_options, index=2)  # Set the default index to 2 for 'All'
+	# Set the default index to 2 for 'All'
+	diabetes_choice = st.sidebar.selectbox('Diabetes', diabetes_options, index=2) 
 	diabetes_option = None
 
 	if diabetes_choice == 'Have Diabetes':
@@ -93,7 +96,8 @@ def page_viz3d():
 	selected_gender_values = [gender_values[gender_options.index(gender)] for gender in selected_genders]
 
 	# Create checkboxes for race
-	race_options = ['Native American', 'Pacific Islander', 'Asian', 'Caucasian', 'African American', 'Multiple Races', 'Other']
+	race_options = ['Native American', 'Pacific Islander', 'Asian', 'Caucasian', 
+				 'African American', 'Multiple Races', 'Other']
 	race_values = [1, 2, 3, 4, 5, 6, 7]
 	selected_races = st.sidebar.multiselect('Race', race_options, default=race_options)
 
@@ -120,13 +124,16 @@ def page_viz3d():
 		st.markdown("No records found for applied filters! Please update your filters.")
 	
 	else:
-		st.markdown(f"{len(filtered_subjects)} records found!")
+		st.subheader(f"**{len(filtered_subjects)} records found!**")
 		subject_ids = [subject['ID'] for subject in filtered_subjects]
 		selected_id = st.selectbox('Select a record:', subject_ids)
 		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
 		unstructured_data = selected_subject.pop("unstructured_data")
+		feat_dict = json.loads(selected_subject.pop("morphological_features"))
+		morphological_features = MorphologicalFeatures(**feat_dict)
+
 		G = SubjectGraph(unstructured_data)
-		st.dataframe(selected_subject)
+		st.dataframe(selected_subject, width=500)
 
 	# Streamlit app
 	st.title('Graph Visualization')
