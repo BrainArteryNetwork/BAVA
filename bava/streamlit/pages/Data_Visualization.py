@@ -134,8 +134,8 @@ def page_viz3d():
 		subject_ids = [subject['ID'] for subject in filtered_subjects]
 		selected_id = st.selectbox('Select a record:', subject_ids)
 		selected_subject = requests.get(url=f"{FAST_API_URL}/subjects/{selected_id}").json()
+		morphological_features = selected_subject.pop("morphological_features")
 		unstructured_data = selected_subject.pop("unstructured_data")
-
 		G = SubjectGraph(unstructured_data)
 		st.dataframe(selected_subject, width=500)
 
