@@ -28,7 +28,7 @@ def page_pandasai():
 	st.title("Hi, I'm BAVA AI!" + "\nHow can I help you today?")
 
 	if not os.environ.get('OPENAI_API_KEY'):
-		st.subheader("OpenAI API Key missing!! Please add/update your OpenAI API key.")
+		st.code("OpenAI API Key missing!! Please add/update your OpenAI API key.")
 		return
 	
 	secret_values = os.environ['OPENAI_API_KEY'] #use the command 'export OPENAI_API_KEY={your API key}' 
