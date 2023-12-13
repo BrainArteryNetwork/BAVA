@@ -9,7 +9,7 @@ from bava.api.database import BavaDB
 from bava.api.schemas import GraphicalFeatures
 from bava.api.config import FAST_API_URL
 
-# run with 'streamlit run ./bava/streamlit/streamlit_visualization3d.py' under SoftwareDev directory
+# run with 'streamlit run ./bava/streamlit/data_visualization3d.py' in repository root
 
 def page_viz3d():
 	"""
