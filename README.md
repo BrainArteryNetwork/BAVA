@@ -7,7 +7,6 @@ BAVA is a cutting-edge online platform designed for medical researchers focusing
 - **3D Visualization**: Interactive 3D rendering of brain artery graphs with capabilities such as zoom, rotate, and pan to explore intricate vascular structures.
 - **Data Filtering**: Advanced filtering options to refine datasets based on demographic, clinical, and morphological criteria.
 - **Statistical Analysis**: Built-in tools for conducting basic statistical analysis, providing insights into the dataset through visual representations.
-- **Digital Twin Simulation**: Creation of digital twins for simulated studies and analyses of brain artery networks.
 - **Data Exploration**: AI models to help users explore and draw conclusions based on historical data.
 
 ## Getting Started
@@ -17,7 +16,7 @@ To get started with BAVA, please follow the instructions below:
 ### Prerequisites
 
 - Ensure you have a modern web browser installed (Chrome, Firefox, Safari, Edge).
-- Download and install Python on your computer.
+- Download and install Python 3.11 on your computer.
 - Have access to your OPENAI API token for AI model-based functions.
 
 ### Installation
@@ -44,7 +43,7 @@ BAVA is a web-based platform and does not require any installation. Simply fork 
 
 ## Documentation
 
-For detailed instructions on how to use BAVA and its features, please refer to the [User Guide](#).
+Final Presentation: https://docs.google.com/presentation/d/1deN9792SYcCmJB5vADWw1z9XZYLmJLCvje1UJm7npQU/edit?usp=sharing
 
 Technology Review: BrainArteryNetwork/SoftwareDev/docs/TechnologyReview.pptx
 Component Specification: BrainArteryNetwork/SoftwareDev/docs/Component_specification.md
@@ -64,8 +63,6 @@ If you need assistance or wish to report a bug, please email our support team at
 - Sharan Ranjit S
 - David Prendez
 - Cherin Lim
-
-See also the list of [contributors](#) who participated in this project.
 
 ## License
 
