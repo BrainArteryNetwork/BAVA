@@ -87,7 +87,7 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
     return subject
 
 @app.get("/subject_morphological_features/{subject_id}", response_model=MorphologicalFeatures)
-async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
+async def get_subject_morphological_features(*, session: Session = Depends(get_session), subject_id: str):
     """
     """
     subject = session.get(Subject, subject_id)
@@ -96,7 +96,7 @@ async def get_by_subject_id(*, session: Session = Depends(get_session), subject_
     return json.loads(subject.morphological_features)
 
 @app.get("/subject_graphical_features/{subject_id}", response_model=GraphicalFeatures)
-async def get_by_subject_id(*, session: Session = Depends(get_session), subject_id: str):
+async def get_subject_graphical_features(*, session: Session = Depends(get_session), subject_id: str):
     """
     """
     subject = session.get(Subject, subject_id)
