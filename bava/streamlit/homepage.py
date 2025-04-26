@@ -22,7 +22,7 @@ def set_custom_style():
         .stApp {
             background: linear-gradient(to bottom, rgba(10, 25, 47, 0.95), rgba(23, 42, 70, 0.95));
             color: white;
-            background-image: url('https://github.com/BrainArteryNetwork/BAVA/tree/main/bava/static/images/banner_background.png');
+            background-image: url('https://raw.githubusercontent.com/BrainArteryNetwork/BAVA/main/bava/static/images/banner_background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -77,45 +77,20 @@ def set_custom_style():
         .get-started-btn {
             background: linear-gradient(90deg, #ffa500, #ff8c00);
             color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
             font-weight: bold;
-            text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border: none;
+            margin-top: 20px;
         }
         
         .get-started-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 165, 0, 0.3);
-        }
-        
-        .get-started-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transform: rotate(45deg);
-            transition: all 0.3s ease;
-        }
-        
-        .get-started-btn:hover::after {
-            transform: rotate(45deg) translate(50%, 50%);
         }
         
         /* Tagline styling */
@@ -174,28 +149,73 @@ def set_custom_style():
             display: flex;
             justify-content: center;
             gap: 40px;
-            margin-top: 60px;
+            margin-top: 40px;
             animation: fadeIn 1s ease-out 0.5s forwards;
-            opacity: 0;
         }
         
         .stat-item {
-            text-align: center;
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px 50px;
+            border-radius: 15px;
+            text-align: center;
             backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 165, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 165, 0, 0.5);
         }
         
         .stat-number {
-            font-size: 36px;
+            font-size: 48px;
             font-weight: bold;
             color: #ffa500;
+            margin-bottom: 10px;
         }
         
         .stat-label {
-            font-size: 14px;
+            font-size: 16px;
             color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Mission and Vision styling */
+        .mission-vision-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .mission-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            width: 45%;
+            min-width: 300px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 165, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .mission-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 165, 0, 0.5);
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffa500;
+            margin-bottom: 20px;
+        }
+        
+        .section-content {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
         }
         </style>
     """, unsafe_allow_html=True)
@@ -211,17 +231,17 @@ def navigation_bar():
     with col1:
         st.markdown("""
             <div class="logo-text">
-                🧠 BrainArteryNet
-                <div style="font-size: 14px; font-weight: normal;">Connect. Discover. Lead.</div>
+                🧠 BrainArteryNetwork
+                <div style="font-size: 14px; font-weight: normal;"></div>
             </div>
         """, unsafe_allow_html=True)
     
     with col2:
-        st.markdown('<a href="/Leaderboard" class="nav-link">Leaderboard</a>', unsafe_allow_html=True)
+        st.markdown('<a href="/Data_Visualization" class="nav-link">Datasets</a>', unsafe_allow_html=True)
     with col3:
-        st.markdown('<a href="/Datasets" class="nav-link">Datasets</a>', unsafe_allow_html=True)
+        st.markdown('<a href="/PandasAI" class="nav-link">Analysis</a>', unsafe_allow_html=True)
     with col4:
-        st.markdown('<a href="/Analysis" class="nav-link">Analysis</a>', unsafe_allow_html=True)
+        st.markdown('<a href="https://wxdrizzle.github.io/MOCHA_documents/Vessel%20Voyager/" target="_blank" class="nav-link">Software</a>', unsafe_allow_html=True)
     with col5:
         st.markdown('<a href="/About_Us" class="nav-link">About Us</a>', unsafe_allow_html=True)
     with col6:
@@ -233,35 +253,65 @@ def navigation_bar():
 
 def main_content():
     """Create the main content section."""
-    # Main tagline with animation
+    # Main title and introduction
     st.markdown("""
-        <div class="tagline">
-            "Decoding brain pathways<br>
-            unlocks the keys to deeper discoveries<br>
-            for a brighter tomorrow."
+        <div style="text-align: center; margin-top: 60px; margin-bottom: 60px;">
+            <div style="font-size: 56px; font-weight: bold; margin-bottom: 20px; color: #ffa500;">
+                BAVA
+            </div>
+            <div style="font-size: 24px; margin-bottom: 10px; color: white;">
+                Brain Artery Visualization & Analysis Tool
+            </div>
+            <div style="font-size: 18px; line-height: 1.6; max-width: 800px; margin: 0 auto; color: rgba(255, 255, 255, 0.9);">
+                BAVA is a cutting-edge online platform designed for medical researchers focusing on neurology, 
+                particularly in the study of brain artery networks. It integrates powerful visualization tools 
+                with statistical analysis and artificial intelligence (AI) capabilities to facilitate the 
+                exploration and analysis of vascular diseases.
+            </div>
         </div>
-    """, unsafe_allow_html=True)
-    
-    # Get Started button
-    st.markdown("""
-        <a href="/Analysis" class="get-started-btn">⚡ Get Started</a>
     """, unsafe_allow_html=True)
     
     # Stats section
     st.markdown("""
         <div class="stats-container">
             <div class="stat-item">
-                <div class="stat-number">1,000+</div>
+                <div class="stat-number">500+</div>
                 <div class="stat-label">Brain Scans Analyzed</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">50+</div>
+                <div class="stat-number">10+</div>
                 <div class="stat-label">Research Papers</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">100+</div>
+                <div class="stat-number">50+</div>
                 <div class="stat-label">Active Researchers</div>
             </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Mission and Vision
+    st.markdown("""
+        <div style="text-align: center; margin-top: 60px;">
+            <div class="mission-vision-container">
+                <div class="mission-box">
+                    <div class="section-title">Our Mission</div>
+                    <div class="section-content">
+                        To establish a standardized framework for analyzing brain artery networks, advancing our 
+                        understanding of neurovascular health across diverse populations.
+                    </div>
+                </div>
+                <div class="mission-box">
+                    <div class="section-title">Our Vision</div>
+                    <div class="section-content">
+                        To revolutionize early diagnosis and treatment of neurovascular conditions through 
+                        advanced brain artery network analysis and visualization.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/Data_Visualization" class="get-started-btn">⚡ Start Exploring</a>
         </div>
     """, unsafe_allow_html=True)
 
@@ -274,7 +324,7 @@ def wave_decoration():
 def home_page():
     # Set page config
     st.set_page_config(
-        page_title="BrainArteryNet - Connect. Discover. Lead.",
+        page_title="BrainArteryNetwork",
         page_icon="🧠",
         layout="wide",
         initial_sidebar_state="collapsed"
